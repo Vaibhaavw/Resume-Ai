@@ -3,20 +3,32 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AI Resume Builder & ATS Optimizer API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: resumes
+    description: Resume management
+  - name: templates
+    description: Resume templates
+  - name: ats
+    description: ATS scoring
+  - name: subscription
+    description: Subscription tier management
+  - name: dashboard
+    description: Dashboard summary endpoints
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +36,467 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── AUTH ──────────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: registerUser
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterBody"
+      responses:
+        "201":
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Email already in use
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      tags: [auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logoutUser
+      tags: [auth]
+      summary: Logout user
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/reset-password:
+    post:
+      operationId: requestPasswordReset
+      tags: [auth]
+      summary: Request password reset email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResetPasswordBody"
+      responses:
+        "200":
+          description: Reset email sent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/update-password:
+    post:
+      operationId: updatePassword
+      tags: [auth]
+      summary: Update user password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePasswordBody"
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+        "400":
+          description: Invalid token or password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── RESUMES ──────────────────────────────────────────────────────────────
+  /resumes:
+    get:
+      operationId: listResumes
+      tags: [resumes]
+      summary: List all resumes for the current user
+      responses:
+        "200":
+          description: List of resumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Resume"
+
+    post:
+      operationId: createResume
+      tags: [resumes]
+      summary: Create a new resume
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateResumeBody"
+      responses:
+        "201":
+          description: Resume created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /resumes/{id}:
+    get:
+      operationId: getResume
+      tags: [resumes]
+      summary: Get a specific resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Resume
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    patch:
+      operationId: updateResume
+      tags: [resumes]
+      summary: Update a resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateResumeBody"
+      responses:
+        "200":
+          description: Updated resume
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      operationId: deleteResume
+      tags: [resumes]
+      summary: Delete a resume
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /resumes/{id}/enhance:
+    post:
+      operationId: enhanceResume
+      tags: [resumes]
+      summary: AI-enhance resume content using AI
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnhanceResumeBody"
+      responses:
+        "200":
+          description: Enhanced content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EnhancedContent"
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── ATS ──────────────────────────────────────────────────────────────────
+  /ats/score:
+    post:
+      operationId: calculateAtsScore
+      tags: [ats]
+      summary: Calculate ATS score for a resume
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtsScoreBody"
+      responses:
+        "200":
+          description: ATS score result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AtsScoreResult"
+        "400":
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /ats/keywords/{sector}:
+    get:
+      operationId: getSectorKeywords
+      tags: [ats]
+      summary: Get industry keywords for a sector
+      parameters:
+        - name: sector
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Keywords list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SectorKeywords"
+
+  # ── TEMPLATES ─────────────────────────────────────────────────────────────
+  /templates:
+    get:
+      operationId: listTemplates
+      tags: [templates]
+      summary: List all available resume templates
+      responses:
+        "200":
+          description: Templates list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Template"
+
+  /templates/{id}:
+    get:
+      operationId: getTemplate
+      tags: [templates]
+      summary: Get a specific template
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Template
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Template"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── SUBSCRIPTION ─────────────────────────────────────────────────────────
+  /subscription:
+    get:
+      operationId: getSubscription
+      tags: [subscription]
+      summary: Get current user subscription
+      responses:
+        "200":
+          description: Subscription info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+
+    patch:
+      operationId: updateSubscription
+      tags: [subscription]
+      summary: Update subscription tier (upgrade/downgrade)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSubscriptionBody"
+      responses:
+        "200":
+          description: Updated subscription
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Subscription"
+
+  # ── DASHBOARD ─────────────────────────────────────────────────────────────
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get user dashboard summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      summary: Get recent resume activity
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+
+  # ── ONBOARDING ─────────────────────────────────────────────────────────────
+  /onboarding:
+    post:
+      operationId: completeOnboarding
+      tags: [auth]
+      summary: Complete user onboarding with sector and profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardingBody"
+      responses:
+        "200":
+          description: Onboarding complete
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Resume"
+
+  # ── WEBHOOK ─────────────────────────────────────────────────────────────
+  /webhook/n8n-signup:
+    post:
+      operationId: triggerSignupWebhook
+      tags: [auth]
+      summary: Trigger n8n welcome email webhook (internal)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebhookSignupBody"
+      responses:
+        "200":
+          description: Webhook triggered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +507,552 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    # ── AUTH SCHEMAS ─────────────────────────────────────────────────────
+    RegisterBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        name:
+          type: string
+      required:
+        - email
+        - password
+        - name
+
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    ResetPasswordBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+        - email
+
+    UpdatePasswordBody:
+      type: object
+      properties:
+        token:
+          type: string
+        newPassword:
+          type: string
+          minLength: 8
+      required:
+        - token
+        - newPassword
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required:
+        - user
+        - token
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        sector:
+          type: ["string", "null"]
+        onboardingCompleted:
+          type: boolean
+        tier:
+          type: string
+          enum: [free, pro, premium]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - name
+        - onboardingCompleted
+        - tier
+        - createdAt
+
+    # ── RESUME SCHEMAS ───────────────────────────────────────────────────
+    ResumeData:
+      type: object
+      properties:
+        personalInfo:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            location:
+              type: string
+            linkedIn:
+              type: ["string", "null"]
+            website:
+              type: ["string", "null"]
+            summary:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - phone
+            - location
+            - summary
+        education:
+          type: array
+          items:
+            type: object
+            properties:
+              institution:
+                type: string
+              degree:
+                type: string
+              field:
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: ["string", "null"]
+              gpa:
+                type: ["string", "null"]
+            required:
+              - institution
+              - degree
+              - field
+              - startDate
+        experience:
+          type: array
+          items:
+            type: object
+            properties:
+              company:
+                type: string
+              title:
+                type: string
+              location:
+                type: string
+              startDate:
+                type: string
+              endDate:
+                type: ["string", "null"]
+              bullets:
+                type: array
+                items:
+                  type: string
+            required:
+              - company
+              - title
+              - location
+              - startDate
+              - bullets
+        skills:
+          type: array
+          items:
+            type: string
+        certifications:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              issuer:
+                type: string
+              date:
+                type: string
+            required:
+              - name
+              - issuer
+              - date
+      required:
+        - personalInfo
+        - education
+        - experience
+        - skills
+        - certifications
+
+    Resume:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        title:
+          type: string
+        sector:
+          type: string
+        templateId:
+          type: ["integer", "null"]
+        data:
+          $ref: "#/components/schemas/ResumeData"
+        atsScore:
+          type: ["integer", "null"]
+        status:
+          type: string
+          enum: [draft, complete]
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - title
+        - sector
+        - data
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateResumeBody:
+      type: object
+      properties:
+        title:
+          type: string
+        sector:
+          type: string
+        templateId:
+          type: ["integer", "null"]
+        data:
+          $ref: "#/components/schemas/ResumeData"
+      required:
+        - title
+        - sector
+        - data
+
+    UpdateResumeBody:
+      type: object
+      properties:
+        title:
+          type: string
+        sector:
+          type: string
+        templateId:
+          type: ["integer", "null"]
+        data:
+          $ref: "#/components/schemas/ResumeData"
+        status:
+          type: string
+          enum: [draft, complete]
+
+    EnhanceResumeBody:
+      type: object
+      properties:
+        field:
+          type: string
+          enum: [summary, bullets, about]
+        content:
+          type: string
+        sector:
+          type: string
+      required:
+        - field
+        - content
+        - sector
+
+    EnhancedContent:
+      type: object
+      properties:
+        original:
+          type: string
+        enhanced:
+          type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+      required:
+        - original
+        - enhanced
+        - suggestions
+
+    # ── ATS SCHEMAS ───────────────────────────────────────────────────────
+    AtsScoreBody:
+      type: object
+      properties:
+        resumeId:
+          type: ["integer", "null"]
+        resumeText:
+          type: string
+        sector:
+          type: string
+      required:
+        - resumeText
+        - sector
+
+    AtsScoreResult:
+      type: object
+      properties:
+        score:
+          type: integer
+          minimum: 0
+          maximum: 100
+        matchedKeywords:
+          type: array
+          items:
+            type: string
+        missingKeywords:
+          type: array
+          items:
+            type: string
+        suggestions:
+          type: array
+          items:
+            type: string
+        breakdown:
+          type: object
+          properties:
+            keywordMatch:
+              type: integer
+            formatting:
+              type: integer
+            experience:
+              type: integer
+            education:
+              type: integer
+          required:
+            - keywordMatch
+            - formatting
+            - experience
+            - education
+      required:
+        - score
+        - matchedKeywords
+        - missingKeywords
+        - suggestions
+        - breakdown
+
+    SectorKeywords:
+      type: object
+      properties:
+        sector:
+          type: string
+        keywords:
+          type: array
+          items:
+            type: string
+        categories:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      required:
+        - sector
+        - keywords
+        - categories
+
+    # ── TEMPLATE SCHEMAS ─────────────────────────────────────────────────
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        style:
+          type: string
+          enum: [modern, minimalist, professional, creative, executive]
+        tier:
+          type: string
+          enum: [free, pro, premium]
+        previewUrl:
+          type: ["string", "null"]
+        colorScheme:
+          type: string
+      required:
+        - id
+        - name
+        - description
+        - style
+        - tier
+        - colorScheme
+
+    # ── SUBSCRIPTION SCHEMAS ──────────────────────────────────────────────
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        tier:
+          type: string
+          enum: [free, pro, premium]
+        atsScoreGuarantee:
+          type: string
+        templateCount:
+          type: integer
+        features:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        renewsAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - userId
+        - tier
+        - atsScoreGuarantee
+        - templateCount
+        - features
+        - createdAt
+
+    UpdateSubscriptionBody:
+      type: object
+      properties:
+        tier:
+          type: string
+          enum: [free, pro, premium]
+      required:
+        - tier
+
+    # ── DASHBOARD SCHEMAS ─────────────────────────────────────────────────
+    DashboardSummary:
+      type: object
+      properties:
+        totalResumes:
+          type: integer
+        averageAtsScore:
+          type: ["number", "null"]
+        bestAtsScore:
+          type: ["integer", "null"]
+        completedResumes:
+          type: integer
+        draftResumes:
+          type: integer
+        currentTier:
+          type: string
+        recentResume:
+          oneOf:
+            - $ref: "#/components/schemas/Resume"
+            - type: "null"
+      required:
+        - totalResumes
+        - completedResumes
+        - draftResumes
+        - currentTier
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        resumeId:
+          type: integer
+        resumeTitle:
+          type: string
+        action:
+          type: string
+          enum: [created, updated, scored, exported]
+        timestamp:
+          type: string
+          format: date-time
+        atsScore:
+          type: ["integer", "null"]
+      required:
+        - id
+        - resumeId
+        - resumeTitle
+        - action
+        - timestamp
+
+    # ── ONBOARDING SCHEMAS ────────────────────────────────────────────────
+    OnboardingBody:
+      type: object
+      properties:
+        sector:
+          type: string
+        personalInfo:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            email:
+              type: string
+            phone:
+              type: string
+            location:
+              type: string
+            summary:
+              type: string
+          required:
+            - firstName
+            - lastName
+            - email
+            - phone
+            - location
+            - summary
+        templateId:
+          type: integer
+      required:
+        - sector
+        - personalInfo
+
+    # ── WEBHOOK SCHEMAS ───────────────────────────────────────────────────
+    WebhookSignupBody:
+      type: object
+      properties:
+        userId:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+      required:
+        - userId
+        - email
+        - name

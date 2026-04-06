@@ -1,0 +1,65 @@
+Role: Act as a Senior Full-Stack AI Engineer.
+Goal: Build a production-ready, high-security "AI Resume Builder & ATS Optimizer" web app.
+
+1. Authentication & Security:
+
+Implement Supabase Auth.
+
+Options: Google, Facebook, Microsoft, and Email/Password.
+
+Features: Protected routes, persistent sessions, password reset flow, and automated "Welcome" email trigger upon signup (to be handled via n8n webhook).
+
+2. Multi-Step Onboarding Flow:
+
+Step A: User selects "Working Sector" (e.g., Tech, Healthcare, Finance).
+
+Step B: Dynamic Form. Based on the sector, collect: Name, Contact, About (AI-enhanced), Education, Experience (with bullet point optimizer), Skills, and Certifications.
+
+Logic: Use an AI Agent node to "perfectly align" and professionally reword the user's input for high impact.
+
+3. ATS Analysis Engine:
+
+Feature: PDF Upload component.
+
+Logic: Parse the PDF and calculate an "ATS Score" (0-100%).
+
+Comparison: Compare the resume against industry-standard keywords based on the selected sector.
+
+4. Template Engine & Export:
+
+Display a gallery of modern, minimalist, and professional resume templates.
+
+Preview Mode: Live side-by-side preview of the resume as data is entered.
+
+Export: Implement "Download as PDF" and "Download as Word" functionality.
+
+5. Subscription & Tier Logic (Packaging):
+
+Base (Free): 3 Basic templates, ATS score guarantee (60-75%).
+
+Pro: 10 Templates, ATS score guarantee (75-90%), AI bullet point suggestions.
+
+Premium: All templates, 95%+ ATS optimization, Cover Letter generator.
+
+6. UI/UX Design:
+
+Theme: Professional, clean, and trustworthy. Use a "SaaS-style" aesthetic (Tailwind CSS, Radix UI).
+
+Palette: Deep Navy, Slate Gray, and Action Blue.
+
+Responsiveness: Fully mobile-responsive.
+
+7. Integration:
+
+Prepare an n8n webhook connection for the email service and the complex AI processing of the "ATS Score."
+
+Instruction: Build the core structure, the database schema in Supabase, and the multi-step frontend flow now.
+
+Why this prompt works for "Vibe Coding":
+Logic Gates: By mentioning "Based on sector, ask X," you tell the AI to build conditional rendering, not just a flat form.
+
+External Hooks: Mentioning n8n and Supabase specifically tells the AI agent to prepare the "plumbing" (API calls and Database tables) rather than just making a pretty "mockup."
+
+Tier Constraints: Defining the "Base to Premium" packages ensures the AI builds the logic to "lock" or "unlock" features based on a user's status.
+
+Security Context: Explicitly mentioning "Protected routes" prevents the AI from making a site where anyone can see the dashboard without logging in.
