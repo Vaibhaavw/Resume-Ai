@@ -4,12 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
+    "dev": "cross-env NODE_ENV=development DATABASE_URL=file:../../lib/db/sqlite.db pnpm run build && cross-env NODE_ENV=development DATABASE_URL=file:../../lib/db/sqlite.db pnpm run start",
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.2",
+    "@types/multer": "^2.1.0",
     "@workspace/api-zod": "workspace:*",
     "@workspace/db": "workspace:*",
     "bcryptjs": "^3.0.3",
@@ -18,7 +20,9 @@
     "drizzle-orm": "catalog:",
     "express": "^5",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
     "node-fetch": "^3.3.2",
+    "pdf-parse": "^2.4.5",
     "pino": "^9",
     "pino-http": "^10"
   },

@@ -624,14 +624,22 @@ components:
               type: string
             email:
               type: string
+              format: email
+            countryCode:
+              type: string
             phone:
               type: string
+              pattern: '^\d{10}$'
             location:
               type: string
             linkedIn:
               type: ["string", "null"]
-            website:
-              type: ["string", "null"]
+              format: uri
+            websites:
+              type: array
+              items:
+                type: string
+                format: uri
             summary:
               type: string
           required:

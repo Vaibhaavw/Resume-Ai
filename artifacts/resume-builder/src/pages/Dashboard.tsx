@@ -55,7 +55,7 @@ export default function Dashboard() {
               {user?.sector ? `Building resumes for the ${user.sector} sector` : "Ready to build your career?"}
             </p>
           </div>
-          <Link href="/resumes/new">
+          <Link href="/templates">
             <Button data-testid="button-new-resume">
               <Plus className="w-4 h-4 mr-2" />
               New Resume
@@ -105,7 +105,7 @@ export default function Dashboard() {
                 <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
                 <h3 className="font-semibold mb-2">No resumes yet</h3>
                 <p className="text-muted-foreground text-sm mb-4">Create your first ATS-optimized resume to get started.</p>
-                <Link href="/resumes/new">
+                <Link href="/templates">
                   <Button size="sm" data-testid="button-create-first-resume">Create Resume</Button>
                 </Link>
               </div>

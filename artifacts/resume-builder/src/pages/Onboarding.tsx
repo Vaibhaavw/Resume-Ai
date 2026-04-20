@@ -75,6 +75,7 @@ export default function Onboarding() {
     experience: [],
     skills: [],
     certifications: [],
+    projects: [],
   };
 
   const handleSectorSelect = (sectorId: string) => {

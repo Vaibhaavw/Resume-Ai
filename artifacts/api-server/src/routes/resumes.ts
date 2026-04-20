@@ -115,6 +115,54 @@ router.delete("/resumes/:id", requireAuth, async (req: AuthRequest, res): Promis
   res.sendStatus(204);
 });
 
+router.post("/resumes/enhance", requireAuth, async (req: AuthRequest, res): Promise<void> => {
+  const parsed = EnhanceResumeBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const { field, content, sector } = parsed.data;
+
+  const enhancements: Record<string, (c: string, s: string) => { enhanced: string; suggestions: string[] }> = {
+    summary: (c, s) => ({
+      enhanced: `Results-driven ${s} professional with a proven track record of delivering high-impact solutions. ${c.length > 20 ? c : "Demonstrated expertise in cross-functional collaboration, strategic problem-solving, and driving measurable outcomes. Passionate about leveraging cutting-edge technologies and industry best practices to exceed organizational objectives."}`,
+      suggestions: [
+        "Lead with your most impressive achievement or unique value proposition",
+        `Include ${s}-specific buzzwords that ATS systems scan for`,
+        "Keep it to 2-3 sentences for maximum impact",
+        "Quantify your impact where possible (e.g., 'reduced costs by 30%')",
+      ],
+    }),
+    bullets: (c, s) => ({
+      enhanced: `• ${c.startsWith("•") || c.startsWith("-") ? c.slice(1).trim() : c}. Achieved measurable results by implementing data-driven strategies and collaborating with cross-functional teams to deliver outcomes aligned with ${s} industry standards.`,
+      suggestions: [
+        "Start each bullet with a strong action verb (Led, Implemented, Drove, Optimized)",
+        "Quantify achievements with specific metrics (%, $, time saved)",
+        `Include ${s}-specific technical keywords for ATS optimization`,
+        "Keep each bullet to 1-2 lines maximum",
+      ],
+    }),
+    about: (c, s) => ({
+      enhanced: `Highly motivated ${s} professional dedicated to excellence and continuous growth. ${c || "Bringing a unique combination of technical expertise and strategic vision to drive organizational success. Committed to staying at the forefront of industry developments while delivering exceptional results."}`,
+      suggestions: [
+        "Tailor this section specifically to the role you're applying for",
+        "Highlight 2-3 core competencies relevant to the sector",
+        "Include a brief mention of your career trajectory",
+      ],
+    }),
+  };
+
+  const enhancer = enhancements[field] || enhancements.summary;
+  const result = enhancer(content, sector);
+
+  res.json({
+    original: content,
+    enhanced: result.enhanced,
+    suggestions: result.suggestions,
+  });
+});
+
 router.post("/resumes/:id/enhance", requireAuth, async (req: AuthRequest, res): Promise<void> => {
   const rawId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
   const params = EnhanceResumeParams.safeParse({ id: parseInt(rawId, 10) });

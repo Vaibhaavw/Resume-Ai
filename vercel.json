@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pnpm --filter @workspace/resume-builder run build",
+  "outputDirectory": "artifacts/resume-builder/dist/public",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    }
+  ]
+}

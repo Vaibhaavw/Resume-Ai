@@ -1,11 +1,12 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { useLocation } from "wouter";
 import { setAuthTokenGetter } from "@workspace/api-client-react";
-import { 
+import {
   useGetCurrentUser, 
   useLoginUser, 
   useRegisterUser, 
   useLogoutUser,
+  getGetCurrentUserQueryKey,
   User,
   LoginBody,
   RegisterBody
@@ -37,6 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     query: {
       enabled: !!token,
       retry: false,
+      queryKey: getGetCurrentUserQueryKey()
     }
   });
 

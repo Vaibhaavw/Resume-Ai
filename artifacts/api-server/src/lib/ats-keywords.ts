@@ -73,83 +73,163 @@ export const SECTOR_KEYWORDS: Record<string, { categories: Record<string, string
   },
 };
 
+export const SOFT_SKILLS = [
+  "leadership", "communication", "teamwork", "collaboration", "problem solving",
+  "critical thinking", "adaptability", "time management", "creativity", "emotional intelligence",
+  "conflict resolution", "mentoring", "strategic thinking", "agile", "presentation"
+];
+
+export const IMPACT_VERBS = [
+  "spearheaded", "engineered", "optimized", "increased", "reduced", "delivered",
+  "implemented", "orchestrated", "transformed", "generated", "leveraged"
+];
+
 export function getKeywordsForSector(sector: string): { keywords: string[]; categories: Record<string, string[]> } {
-  const normalized = sector.toLowerCase().replace(/\s+/g, "");
-  const data = SECTOR_KEYWORDS[normalized] || SECTOR_KEYWORDS["tech"];
+  const data = SECTOR_KEYWORDS[sector as keyof typeof SECTOR_KEYWORDS] || SECTOR_KEYWORDS["tech"];
   const keywords = Object.values(data.categories).flat();
   return { keywords, categories: data.categories };
 }
 
-export function calculateAtsScore(resumeText: string, sector: string): {
+export function calculateAtsScore(resumeText: string, sector: string, jobDescription?: string): {
   score: number;
   matchedKeywords: string[];
   missingKeywords: string[];
   suggestions: string[];
-  breakdown: { keywordMatch: number; formatting: number; experience: number; education: number };
+  breakdown: { 
+    keywordMatch: number; formatting: number; experience: number; 
+    education: number; customization: number; impact: number; softSkills: number 
+  };
 } {
   const { keywords } = getKeywordsForSector(sector);
   const textLower = resumeText.toLowerCase();
-  
+
+  // 1. Keyword Match (Hard Skills) - 30% Weight
   const matchedKeywords: string[] = [];
   const missingKeywords: string[] = [];
-  
   for (const kw of keywords) {
-    if (textLower.includes(kw.toLowerCase())) {
+    const regex = new RegExp(`\\b${kw.toLowerCase().replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'g');
+    if (regex.test(textLower)) {
       matchedKeywords.push(kw);
     } else {
       missingKeywords.push(kw);
     }
   }
+  const keywordScore = keywords.length > 0 ? Math.min(100, Math.round((matchedKeywords.length / Math.min(keywords.length, 12)) * 100)) : 0;
 
-  const keywordMatchRate = keywords.length > 0 ? matchedKeywords.length / keywords.length : 0;
-  const keywordScore = Math.round(keywordMatchRate * 100);
-
-  // Formatting check
-  const hasEmail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/.test(resumeText);
-  const hasPhone = /[\d\-\(\)\+\s]{10,}/.test(resumeText);
-  const hasBullets = /[-•*]/.test(resumeText);
-  const hasEducation = /education|degree|university|college|bachelor|master|phd/i.test(resumeText);
-  const hasExperience = /experience|work|job|position|role|company|employer/i.test(resumeText);
-  
+  // 2. Formatting & Structure - 15% Weight
+  const segments = ["education", "experience", "skills", "summary", "contact", "projects", "certifications"];
+  const foundSegments = segments.filter(s => textLower.includes(s));
+  const hasContactInfo = /[a-zA-Z0-9._%+-]+@/.test(resumeText) && /[\d\-\(\)\+\s]{10,}/.test(resumeText);
   const formattingScore = Math.round(
-    ((hasEmail ? 25 : 0) + (hasPhone ? 25 : 0) + (hasBullets ? 25 : 0) + (hasExperience ? 25 : 0))
+    (foundSegments.length / segments.length) * 60 + (hasContactInfo ? 40 : 0)
   );
-  const educationScore = hasEducation ? Math.round(75 + Math.random() * 25) : Math.round(40 + Math.random() * 30);
-  const experienceScore = hasExperience ? Math.round(70 + Math.random() * 25) : Math.round(30 + Math.random() * 30);
 
-  const overallScore = Math.round(
-    keywordScore * 0.45 + formattingScore * 0.2 + experienceScore * 0.2 + educationScore * 0.15
+  // 3. Experience & 4. Education - 10% Each
+  const experienceDepth = (resumeText.match(/\b(senior|lead|manager|director|vp|head|years|since|until)\b/gi) || []).length;
+  const experienceScore = Math.min(100, (experienceDepth * 8) + 30);
+  const hasAcademicDegree = /\b(bachelor|master|phd|b\.s|m\.s|university|college|graduate)\b/i.test(resumeText);
+  const educationScore = hasAcademicDegree ? 95 : 40;
+
+  // 5. High-Accuracy Impact (Metric Detection) - 15% Weight
+  const metrics = (resumeText.match(/(\d+(?:%|\+|\s?k|\s?m|\s?b|\s?units|x)|(?:\$|£|€)\s?\d+)/gi) || []);
+  const metricVariety = new Set(metrics).size;
+  let impactScore = (metricVariety * 15) + (textLower.match(/\b(increased|reduced|delivered|generated|optimized|spearheaded)\b/g)?.length || 0) * 8;
+  impactScore = Math.min(100, Math.max(0, impactScore));
+
+  // 6. Soft Skills Semantic Scan - 10% Weight
+  let softSkillsMatched = 0;
+  for (const skill of SOFT_SKILLS) {
+    if (textLower.includes(skill)) softSkillsMatched++;
+  }
+  const softSkillsScore = Math.min(100, Math.round((softSkillsMatched / 4) * 100));
+
+  // 7. Customization (Targeted Match Bias) - 10% Weight
+  let customizationScore = 55; // Baseline
+  const jdMissingFromResume: string[] = [];
+
+  if (jobDescription && jobDescription.length > 20) {
+    const jdLower = jobDescription.toLowerCase();
+    
+    // Extract potential technical keywords from JD (Capitalized words or sector-specific ones)
+    const jdSpecificKeywords = keywords.filter(kw => jdLower.includes(kw.toLowerCase()));
+    
+    // Check which JD-specific keywords are in the resume
+    const jdMatches = jdSpecificKeywords.filter(kw => textLower.includes(kw.toLowerCase()));
+    const jdMissing = jdSpecificKeywords.filter(kw => !textLower.includes(kw.toLowerCase()));
+    
+    jdMissingFromResume.push(...jdMissing);
+
+    customizationScore = jdSpecificKeywords.length > 0
+      ? Math.round((jdMatches.length / jdSpecificKeywords.length) * 100)
+      : 80; // Default high if no specific keys found in JD
+  }
+
+  // FINAL SCORING (Weighted Model)
+  let overallScore = Math.round(
+    (keywordScore * 0.30) + 
+    (formattingScore * 0.15) + 
+    (experienceScore * 0.10) + 
+    (educationScore * 0.10) + 
+    (impactScore * 0.15) + 
+    (softSkillsScore * 0.10) + 
+    (customizationScore * 0.10)
   );
+
+  // --- Contextual Example Helpers ---
+  const sentences = resumeText.split(/[.!?]\s+/).filter(s => s.length > 10);
+  const findWeakSentence = (type: "metric" | "verb") => {
+    if (type === "metric") {
+      return sentences.find(s => !/(\d|%|\$)/.test(s))?.trim();
+    }
+    return sentences.find(s => s.toLowerCase().startsWith("helped") || s.toLowerCase().startsWith("worked") || s.toLowerCase().startsWith("responsible"))?.trim();
+  };
 
   const suggestions: string[] = [];
-  if (keywordMatchRate < 0.3) {
-    suggestions.push(`Add more sector-specific keywords. You're only matching ${Math.round(keywordMatchRate * 100)}% of key terms for ${sector}.`);
+  
+  // 1. Impact Suggestion
+  if (impactScore < 70) {
+    const weak = findWeakSentence("metric");
+    let msg = "Quantifiable Impact: Add specific metrics (%, $, numbers) to demonstrate tangible achievements.";
+    if (weak) msg += `\nExample: "${weak.slice(0, 40)}..." → "${weak.slice(0, 30)}... increasing efficiency by 20%."`;
+    suggestions.push(msg);
   }
-  if (!hasBullets) {
-    suggestions.push("Use bullet points to highlight achievements and responsibilities — ATS systems parse these better.");
+
+  // 2. Keyword Suggestion
+  if (keywordScore < 80) {
+    suggestions.push(`Skill Density: Increase frequency of key technical terms like ${missingKeywords.slice(0, 2).join(", ")} to improve searchability.`);
   }
-  if (missingKeywords.slice(0, 3).length > 0) {
-    suggestions.push(`Consider adding these high-impact keywords: ${missingKeywords.slice(0, 3).join(", ")}.`);
+  
+  // 3. Targeted Suggestion
+  if (jdMissingFromResume.length > 0) {
+    suggestions.push(`Targeted Match: Your resume is missing critical terms found in the Job Description: ${jdMissingFromResume.slice(0, 3).join(", ")}.`);
   }
-  if (!hasEmail || !hasPhone) {
-    suggestions.push("Ensure your contact information (email, phone) is clearly listed at the top of the resume.");
+
+  // 4. Formatting Suggestion
+  if (formattingScore < 90) {
+    suggestions.push("Document Structure: Ensure clear headings and consistent bullet point usage for better parsing.");
   }
-  if (overallScore < 60) {
-    suggestions.push("Your resume needs significant improvement to pass ATS filters. Focus on keyword density and formatting.");
-  } else if (overallScore < 75) {
-    suggestions.push("You're close! Adding 5-10 more relevant keywords could push you past the 75% threshold.");
+
+  // 5. Verb Suggestion
+  if (overallScore < 75) {
+    const weak = findWeakSentence("verb");
+    let msg = "Executive Presence: Use high-impact action verbs (e.g., spearheaded, optimized) to describe your roles.";
+    if (weak) msg += `\nExample: "${weak.slice(0, 40)}..." → "Spearheaded ${weak.toLowerCase().replace(/^(helped|worked|responsible for)\s+/i, "")}..."`;
+    suggestions.push(msg);
   }
 
   return {
     score: Math.min(100, Math.max(0, overallScore)),
-    matchedKeywords: matchedKeywords.slice(0, 20),
-    missingKeywords: missingKeywords.slice(0, 15),
+    matchedKeywords: Array.from(new Set(matchedKeywords)).slice(0, 15),
+    missingKeywords: Array.from(new Set([...missingKeywords, ...jdMissingFromResume])).slice(0, 10),
     suggestions,
     breakdown: {
       keywordMatch: keywordScore,
       formatting: formattingScore,
       experience: experienceScore,
       education: educationScore,
+      customization: customizationScore,
+      impact: impactScore,
+      softSkills: softSkillsScore,
     },
   };
 }

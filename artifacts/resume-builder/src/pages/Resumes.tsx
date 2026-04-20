@@ -37,7 +37,7 @@ export default function Resumes() {
               {resumes?.length || 0} resume{resumes?.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <Link href="/resumes/new">
+          <Link href="/templates">
             <Button data-testid="button-new-resume">
               <Plus className="w-4 h-4 mr-2" />
               New Resume
@@ -56,7 +56,7 @@ export default function Resumes() {
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">No resumes yet</h2>
             <p className="text-muted-foreground mb-6">Create your first ATS-optimized resume to start your job search.</p>
-            <Link href="/resumes/new">
+            <Link href="/templates">
               <Button data-testid="button-create-first">Create Your First Resume</Button>
             </Link>
           </div>
