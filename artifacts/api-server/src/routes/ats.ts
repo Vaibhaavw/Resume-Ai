@@ -4,6 +4,9 @@ import multer from "multer";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
+// Help Vercel trace dependency
+// import pdf from 'pdf-parse'; 
+
 /**
  * Robust PDF Parser Loader
  */
@@ -61,28 +64,26 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
         const data = await pdfParser(req.file.buffer);
         text = data.text || "";
       } catch (parseErr: any) {
-        console.warn(`[ATS] PDF parse failed, falling back to string: ${parseErr.message}`);
-        text = req.file.buffer.toString("utf-8");
+        console.warn(`[ATS] PDF parse failed: ${parseErr.message}`);
+        text = ""; // Don't dump binary data into text
       }
     } else {
       text = req.file.buffer.toString("utf-8");
     }
 
     const cleanText = text.trim().replace(/\s+/g, " ");
-    console.log(`[ATS] Extraction successful. Text length: ${cleanText.length}`);
     
     res.json({ 
-      text: cleanText,
       debug: {
-        method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
-        length: cleanText.length,
-        originalName: req.file.originalname,
-        mimetype: req.file.mimetype,
-        size: req.file.size,
+        success: cleanText.length > 0,
         parserLoaded: !!pdfParser,
         parserError: parserLoadError,
-        snippet: cleanText.slice(0, 100)
-      }
+        method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        textLength: cleanText.length,
+      },
+      text: cleanText,
     });
   } catch (error: any) {
     console.error(`[ATS] Extraction fatal error: ${error.message}`);
