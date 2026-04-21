@@ -68,10 +68,20 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     const cleanText = text.trim().replace(/\s+/g, " ");
     console.log(`[ATS] Extraction successful. Text length: ${cleanText.length}`);
     
-    res.json({ text: cleanText });
+    res.json({ 
+      text: cleanText,
+      debug: {
+        method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
+        length: cleanText.length,
+        originalName: req.file.originalname
+      }
+    });
   } catch (error: any) {
     console.error(`[ATS] Extraction fatal error: ${error.message}`);
-    res.status(500).json({ error: `Text extraction failed: ${error.message}` });
+    res.status(500).json({ 
+      error: `Text extraction failed: ${error.message}`,
+      debug: { stack: error.stack }
+    });
   }
 });
 
