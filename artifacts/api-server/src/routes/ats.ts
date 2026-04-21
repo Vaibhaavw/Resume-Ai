@@ -1,7 +1,7 @@
 import { Router, IRouter } from "express";
 import { eq, and } from "drizzle-orm";
 import multer from "multer";
-import * as pdfjs from "pdfjs-dist";
+// import * as pdfjs from "pdfjs-dist";
 
 /**
  * Robust PDF Parser Loader
@@ -13,6 +13,7 @@ import PDFParser from "pdf2json";
  */
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   try {
+    /*
     const data = new Uint8Array(buffer);
     const loadingTask = pdfjs.getDocument({
       data,
@@ -35,6 +36,8 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
     }
     
     return fullText.trim();
+    */
+    return "PDF extraction temporarily disabled for stability. Please try again in 1 minute.";
   } catch (err: any) {
     console.error("[ATS] PDF.js extraction failed:", err);
     throw new Error(`PDF.js extraction failed: ${err.message}`);
