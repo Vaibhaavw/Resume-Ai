@@ -56,7 +56,9 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
           throw new Error(`Invalid PDF header: ${header}`);
         }
         
-        const { text: extractedText, metadata } = await extractText(buffer);
+        // Explicitly convert to Uint8Array to satisfy unpdf's strict type checking
+        const uint8Array = new Uint8Array(buffer);
+        const { text: extractedText } = await extractText(uint8Array);
         text = extractedText || "";
         
         // If text is still empty, let's look for images (common in scanned PDFs)
