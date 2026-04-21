@@ -1,3 +1,15 @@
+// Global polyfills for pdf-parse (pdf.js) compatibility in Node.js
+if (typeof (global as any).DOMMatrix === "undefined") {
+  (global as any).DOMMatrix = class DOMMatrix {
+    constructor() {}
+  };
+}
+if (typeof (global as any).Path2D === "undefined") {
+  (global as any).Path2D = class Path2D {
+    constructor() {}
+  };
+}
+
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
