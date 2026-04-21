@@ -43,26 +43,53 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     console.log(`[ATS] Extracting text from ${req.file.originalname} (${req.file.mimetype})...`);
 
     let text = "";
-    if (req.file.mimetype === "application/pdf") {
+    const buffer = req.file.buffer;
+    const isPdf = req.file.mimetype === "application/pdf";
+    
+    // Deep Diagnostic Checks
+    const header = buffer.slice(0, 5).toString();
+    const hasPdfHeader = header.startsWith("%PDF");
+    
+    if (isPdf) {
       try {
-        text = await extractTextFromPdf(req.file.buffer);
+        if (!hasPdfHeader) {
+          throw new Error(`Invalid PDF header: ${header}`);
+        }
+        
+        const { text: extractedText, metadata } = await extractText(buffer);
+        text = extractedText || "";
+        
+        // If text is still empty, let's look for images (common in scanned PDFs)
+        if (!text.trim() && buffer.length > 5000) {
+          const bufferStr = buffer.toString("binary");
+          const hasImages = bufferStr.includes("/Image") || bufferStr.includes("/XObject");
+          if (hasImages) {
+            text = "[ERROR_SCANNED_PDF] This PDF appears to be a scanned image. Please upload a text-based PDF for ATS scanning.";
+          }
+        }
       } catch (parseErr: any) {
         console.warn(`[ATS] PDF parse failed: ${parseErr.message}`);
-        text = "";
+        text = `[ERROR_CORRUPT] ${parseErr.message}`;
       }
     } else {
-      text = req.file.buffer.toString("utf-8");
+      text = buffer.toString("utf-8");
     }
 
     const cleanText = text.trim().replace(/\s+/g, " ");
     
     res.json({ 
       debug: {
-        success: cleanText.length > 0,
-        method: req.file.mimetype === "application/pdf" ? "unpdf" : "text",
+        success: cleanText.length > 0 && !cleanText.startsWith("[ERROR"),
+        method: isPdf ? "unpdf" : "text",
         mimetype: req.file.mimetype,
         size: req.file.size,
         textLength: cleanText.length,
+        diagnostic: {
+          hasPdfHeader,
+          headerPreview: header,
+          isScannedSuspected: cleanText.includes("SCANNED_PDF"),
+          isCorruptSuspected: cleanText.includes("CORRUPT"),
+        }
       },
       text: cleanText,
     });
