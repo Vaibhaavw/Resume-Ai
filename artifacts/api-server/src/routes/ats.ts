@@ -7,6 +7,13 @@ const require = createRequire(import.meta.url);
 // Help Vercel trace dependency
 // import pdf from 'pdf-parse'; 
 
+// Polyfill for pdf-parse (pdf.js) compatibility in Node.js
+if (typeof (global as any).DOMMatrix === "undefined") {
+  (global as any).DOMMatrix = class DOMMatrix {
+    constructor() {}
+  };
+}
+
 /**
  * Robust PDF Parser Loader
  */
