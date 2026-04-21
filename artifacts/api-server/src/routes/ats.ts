@@ -73,7 +73,8 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
       debug: {
         method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
         length: cleanText.length,
-        originalName: req.file.originalname
+        originalName: req.file.originalname,
+        snippet: cleanText.slice(0, 100)
       }
     });
   } catch (error: any) {
