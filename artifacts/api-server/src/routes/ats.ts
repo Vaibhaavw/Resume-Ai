@@ -25,9 +25,10 @@ async function getPdfParser() {
   try {
     // Strategy 1: Dynamic Import (best for ESM)
     try {
-      const pdfModule = await import("pdf-parse");
+      const pdfModule: any = await import("pdf-parse");
       const pdf = pdfModule.default || pdfModule;
       if (typeof pdf === "function") return pdf;
+      if (pdf && typeof pdf.PDFParse === "function") return pdf.PDFParse;
       errors.push(`Import got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
     } catch (e: any) {
       errors.push(`Import failed: ${e.message}`);
@@ -38,6 +39,7 @@ async function getPdfParser() {
       const pdf = require("pdf-parse");
       if (typeof pdf === "function") return pdf;
       if (pdf && typeof pdf.default === "function") return pdf.default;
+      if (pdf && typeof pdf.PDFParse === "function") return pdf.PDFParse;
       errors.push(`Require got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
     } catch (e: any) {
       errors.push(`Require failed: ${e.message}`);
