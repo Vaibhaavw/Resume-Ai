@@ -7,21 +7,23 @@ const require = createRequire(import.meta.url);
 /**
  * Robust PDF Parser Loader
  */
+/**
+ * Robust PDF Parser Loader
+ */
 function getPdfParser() {
   try {
+    // Attempt to require the main entry point
     const pdf = require("pdf-parse");
     if (typeof pdf === "function") return pdf;
-    if (typeof pdf.default === "function") return pdf.default;
+    if (pdf && typeof pdf.default === "function") return pdf.default;
     
-    // Try fallback path if root export is an object without default
-    const pdfFallback = require("pdf-parse/dist/pdf-parse/index.js");
-    if (typeof pdfFallback === "function") return pdfFallback;
-    if (typeof pdfFallback.default === "function") return pdfFallback.default;
+    // Attempt to require the lib path directly (common workaround for bundling)
+    const pdfLib = require("pdf-parse/lib/pdf-parse.js");
+    if (typeof pdfLib === "function") return pdfLib;
     
-    throw new Error("No function export found in pdf-parse");
+    return null;
   } catch (err) {
     console.error("[ATS] PDF Parser Load Error:", err);
-    // Return a dummy function to prevent crash, fallback to text
     return null;
   }
 }
@@ -74,6 +76,9 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
         method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
         length: cleanText.length,
         originalName: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        parserLoaded: !!pdfParser,
         snippet: cleanText.slice(0, 100)
       }
     });
