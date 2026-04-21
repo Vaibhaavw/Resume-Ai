@@ -12,5 +12,8 @@
     "cross-env": "^10.1.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2"
+  },
+  "dependencies": {
+    "pdf-parse": "^2.4.5"
   }
 }
