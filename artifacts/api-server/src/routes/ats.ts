@@ -1,7 +1,7 @@
 import { Router, IRouter } from "express";
 import { eq, and } from "drizzle-orm";
 import multer from "multer";
-import PDFParser from "pdf2json";
+import * as pdfjs from "pdfjs-dist";
 
 /**
  * Robust PDF Parser Loader
@@ -9,46 +9,36 @@ import PDFParser from "pdf2json";
 import PDFParser from "pdf2json";
 
 /**
- * Robust PDF Text Extractor using pdf2json
+ * Industry-standard PDF Text Extractor using Mozilla PDF.js
  */
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const pdfParser = new (PDFParser as any).default ? new (PDFParser as any).default() : new (PDFParser as any)();
+  try {
+    const data = new Uint8Array(buffer);
+    const loadingTask = pdfjs.getDocument({
+      data,
+      useSystemFonts: true,
+      disableFontFace: true,
+      isEvalSupported: false,
+    });
     
-    pdfParser.on("pdfParser_dataError", (errData: any) => {
-      console.error("[ATS] PDF Parser Error:", errData.parserError);
-      reject(errData.parserError);
-    });
-
-    pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
-      try {
-        let text = "";
-        // Manually traverse pages and texts for maximum compatibility
-        if (pdfData && pdfData.Pages) {
-          pdfData.Pages.forEach((page: any) => {
-            if (page.Texts) {
-              page.Texts.forEach((t: any) => {
-                if (t.R && t.R[0] && t.R[0].T) {
-                  text += decodeURIComponent(t.R[0].T) + " ";
-                }
-              });
-            }
-          });
-        }
-        
-        // Fallback to raw content if manual traversal was empty
-        if (!text.trim()) {
-          text = (pdfParser as any).getRawTextContent() || "";
-        }
-        
-        resolve(text.trim());
-      } catch (err) {
-        reject(err);
-      }
-    });
-
-    pdfParser.parseBuffer(buffer);
-  });
+    const pdf = await loadingTask.promise;
+    let fullText = "";
+    
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const strings = textContent.items
+        .map((item: any) => item.str)
+        .filter((s: string) => s.trim().length > 0);
+      
+      fullText += strings.join(" ") + "\n";
+    }
+    
+    return fullText.trim();
+  } catch (err: any) {
+    console.error("[ATS] PDF.js extraction failed:", err);
+    throw new Error(`PDF.js extraction failed: ${err.message}`);
+  }
 }
 
 import { db, resumesTable, activityTable } from "@workspace/db";
@@ -89,7 +79,7 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     res.json({ 
       debug: {
         success: cleanText.length > 0,
-        method: req.file.mimetype === "application/pdf" ? "pdf2json" : "text",
+        method: req.file.mimetype === "application/pdf" ? "pdfjs-dist" : "text",
         mimetype: req.file.mimetype,
         size: req.file.size,
         textLength: cleanText.length,
