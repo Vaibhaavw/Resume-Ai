@@ -1,56 +1,28 @@
 import { Router, IRouter } from "express";
 import { eq, and } from "drizzle-orm";
 import multer from "multer";
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-
-// Help Vercel trace dependency
-// import pdf from 'pdf-parse'; 
-
-// Polyfill for pdf-parse (pdf.js) compatibility in Node.js
-if (typeof (globalThis as any).DOMMatrix === "undefined") {
-  (globalThis as any).DOMMatrix = class DOMMatrix { constructor() {} };
-}
-if (typeof (globalThis as any).Path2D === "undefined") {
-  (globalThis as any).Path2D = class Path2D { constructor() {} };
-}
+import PDFParser from "pdf2json";
 
 /**
  * Robust PDF Parser Loader
  */
-let parserLoadError: string | null = null;
+import PDFParser from "pdf2json";
 
-async function getPdfParser() {
-  const errors: string[] = [];
-  try {
-    // Strategy 1: Dynamic Import (best for ESM)
-    try {
-      const pdfModule: any = await import("pdf-parse");
-      const pdf = pdfModule.default || pdfModule;
-      if (typeof pdf === "function") return pdf;
-      if (pdf && typeof pdf.PDFParse === "function") return pdf.PDFParse;
-      errors.push(`Import got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
-    } catch (e: any) {
-      errors.push(`Import failed: ${e.message}`);
-    }
+/**
+ * Robust PDF Text Extractor using pdf2json
+ */
+async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const pdfParser = new (PDFParser as any).default ? new (PDFParser as any).default() : new (PDFParser as any)();
+    
+    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
+    pdfParser.on("pdfParser_dataReady", () => {
+      const text = (pdfParser as any).getRawTextContent();
+      resolve(text || "");
+    });
 
-    // Strategy 2: Standard require
-    try {
-      const pdf = require("pdf-parse");
-      if (typeof pdf === "function") return pdf;
-      if (pdf && typeof pdf.default === "function") return pdf.default;
-      if (pdf && typeof pdf.PDFParse === "function") return pdf.PDFParse;
-      errors.push(`Require got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
-    } catch (e: any) {
-      errors.push(`Require failed: ${e.message}`);
-    }
-
-    parserLoadError = errors.join(" | ");
-    return null;
-  } catch (err: any) {
-    parserLoadError = `Fatal loader error: ${err.message}`;
-    return null;
-  }
+    pdfParser.parseBuffer(buffer);
+  });
 }
 
 import { db, resumesTable, activityTable } from "@workspace/db";
@@ -75,18 +47,12 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     console.log(`[ATS] Extracting text from ${req.file.originalname} (${req.file.mimetype})...`);
 
     let text = "";
-    const pdfParser = await getPdfParser();
-
     if (req.file.mimetype === "application/pdf") {
       try {
-        if (!pdfParser) {
-          throw new Error(`PDF parser failed to load: ${parserLoadError}`);
-        }
-        const data = await pdfParser(req.file.buffer);
-        text = data.text || "";
+        text = await extractTextFromPdf(req.file.buffer);
       } catch (parseErr: any) {
         console.warn(`[ATS] PDF parse failed: ${parseErr.message}`);
-        text = ""; // Don't dump binary data into text
+        text = "";
       }
     } else {
       text = req.file.buffer.toString("utf-8");
@@ -97,9 +63,7 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     res.json({ 
       debug: {
         success: cleanText.length > 0,
-        parserLoaded: !!pdfParser,
-        parserError: parserLoadError,
-        method: req.file.mimetype === "application/pdf" ? "pdf-parse" : "text",
+        method: req.file.mimetype === "application/pdf" ? "pdf2json" : "text",
         mimetype: req.file.mimetype,
         size: req.file.size,
         textLength: cleanText.length,
