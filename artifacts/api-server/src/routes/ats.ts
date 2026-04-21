@@ -15,10 +15,36 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   return new Promise((resolve, reject) => {
     const pdfParser = new (PDFParser as any).default ? new (PDFParser as any).default() : new (PDFParser as any)();
     
-    pdfParser.on("pdfParser_dataError", (errData: any) => reject(errData.parserError));
-    pdfParser.on("pdfParser_dataReady", () => {
-      const text = (pdfParser as any).getRawTextContent();
-      resolve(text || "");
+    pdfParser.on("pdfParser_dataError", (errData: any) => {
+      console.error("[ATS] PDF Parser Error:", errData.parserError);
+      reject(errData.parserError);
+    });
+
+    pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
+      try {
+        let text = "";
+        // Manually traverse pages and texts for maximum compatibility
+        if (pdfData && pdfData.Pages) {
+          pdfData.Pages.forEach((page: any) => {
+            if (page.Texts) {
+              page.Texts.forEach((t: any) => {
+                if (t.R && t.R[0] && t.R[0].T) {
+                  text += decodeURIComponent(t.R[0].T) + " ";
+                }
+              });
+            }
+          });
+        }
+        
+        // Fallback to raw content if manual traversal was empty
+        if (!text.trim()) {
+          text = (pdfParser as any).getRawTextContent() || "";
+        }
+        
+        resolve(text.trim());
+      } catch (err) {
+        reject(err);
+      }
     });
 
     pdfParser.parseBuffer(buffer);
