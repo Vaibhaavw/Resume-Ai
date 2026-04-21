@@ -7,28 +7,27 @@ const require = createRequire(import.meta.url);
 /**
  * Robust PDF Parser Loader
  */
-/**
- * Robust PDF Parser Loader
- */
+let parserLoadError: string | null = null;
+
 function getPdfParser() {
   try {
-    // Attempt to require the main entry point
+    // Strategy 1: Standard require (should work if externalized and installed)
     const pdf = require("pdf-parse");
     if (typeof pdf === "function") return pdf;
     if (pdf && typeof pdf.default === "function") return pdf.default;
     
-    // Attempt to require the lib path directly (common workaround for bundling)
+    // Strategy 2: Direct lib path
     const pdfLib = require("pdf-parse/lib/pdf-parse.js");
     if (typeof pdfLib === "function") return pdfLib;
     
+    parserLoadError = "Module found but no valid function exported";
     return null;
-  } catch (err) {
+  } catch (err: any) {
+    parserLoadError = err.message;
     console.error("[ATS] PDF Parser Load Error:", err);
     return null;
   }
 }
-
-const pdfParser = getPdfParser();
 
 import { db, resumesTable, activityTable } from "@workspace/db";
 import { CalculateAtsScoreBody, GetSectorKeywordsParams } from "@workspace/api-zod";
@@ -52,10 +51,12 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     console.log(`[ATS] Extracting text from ${req.file.originalname} (${req.file.mimetype})...`);
 
     let text = "";
+    const pdfParser = getPdfParser();
+
     if (req.file.mimetype === "application/pdf") {
       try {
         if (!pdfParser) {
-          throw new Error("PDF parser failed to initialize");
+          throw new Error(`PDF parser failed to load: ${parserLoadError}`);
         }
         const data = await pdfParser(req.file.buffer);
         text = data.text || "";
@@ -79,6 +80,7 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
         mimetype: req.file.mimetype,
         size: req.file.size,
         parserLoaded: !!pdfParser,
+        parserError: parserLoadError,
         snippet: cleanText.slice(0, 100)
       }
     });
