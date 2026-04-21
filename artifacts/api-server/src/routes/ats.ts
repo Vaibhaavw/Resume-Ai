@@ -1,26 +1,6 @@
 import { Router, IRouter } from "express";
 import { eq, and } from "drizzle-orm";
 import multer from "multer";
-// import * as pdfjs from "pdfjs-dist";
-
-/**
- * Robust PDF Parser Loader
- */
-import { extractText } from "unpdf";
-
-/**
- * Stable, Lightweight PDF Text Extractor using unpdf
- */
-async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  try {
-    const { text } = await extractText(buffer);
-    return text || "";
-  } catch (err: any) {
-    console.error("[ATS] unpdf extraction failed:", err);
-    throw new Error(`PDF extraction failed: ${err.message}`);
-  }
-}
-
 import { db, resumesTable, activityTable } from "@workspace/db";
 import { CalculateAtsScoreBody, GetSectorKeywordsParams } from "@workspace/api-zod";
 import { requireAuth, AuthRequest } from "../lib/auth";
@@ -56,19 +36,18 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
           throw new Error(`Invalid PDF header: ${header}`);
         }
         
-        // Explicitly convert to Uint8Array to satisfy unpdf's strict type checking
-        const uint8Array = new Uint8Array(buffer);
-        const { text: extractedText } = await extractText(uint8Array);
-        text = extractedText || "";
-        
-        // If text is still empty, let's look for images (common in scanned PDFs)
-        if (!text.trim() && buffer.length > 5000) {
-          const bufferStr = buffer.toString("binary");
-          const hasImages = bufferStr.includes("/Image") || bufferStr.includes("/XObject");
-          if (hasImages) {
-            text = "[ERROR_SCANNED_PDF] This PDF appears to be a scanned image. Please upload a text-based PDF for ATS scanning.";
-          }
+        // Localized polyfills for pdf-parse-fork compatibility
+        if (typeof (globalThis as any).DOMMatrix === "undefined") {
+          (globalThis as any).DOMMatrix = class DOMMatrix { constructor() {} };
         }
+        if (typeof (globalThis as any).Path2D === "undefined") {
+          (globalThis as any).Path2D = class Path2D { constructor() {} };
+        }
+
+        const pdf = await import("pdf-parse-fork");
+        const parser = pdf.default || pdf;
+        const data = await (parser as any)(buffer);
+        text = data.text || "";
       } catch (parseErr: any) {
         console.warn(`[ATS] PDF parse failed: ${parseErr.message}`);
         text = `[ERROR_CORRUPT] ${parseErr.message}`;
@@ -82,15 +61,14 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     res.json({ 
       debug: {
         success: cleanText.length > 0 && !cleanText.startsWith("[ERROR"),
-        method: isPdf ? "unpdf" : "text",
+        method: isPdf ? "pdf-parse-fork" : "text",
         mimetype: req.file.mimetype,
         size: req.file.size,
         textLength: cleanText.length,
         diagnostic: {
           hasPdfHeader,
           headerPreview: header,
-          isScannedSuspected: cleanText.includes("SCANNED_PDF"),
-          isCorruptSuspected: cleanText.includes("CORRUPT"),
+          isScannedSuspected: cleanText.length === 0 && buffer.length > 5000,
         }
       },
       text: cleanText,

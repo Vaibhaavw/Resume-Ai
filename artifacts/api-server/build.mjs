@@ -104,6 +104,7 @@ async function buildAll() {
       "pdf2json",
       "pdfjs-dist",
       "unpdf",
+      "pdf-parse-fork",
     ],
     sourcemap: "linked",
     plugins: [
