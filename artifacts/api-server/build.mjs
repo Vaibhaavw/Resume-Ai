@@ -103,6 +103,7 @@ async function buildAll() {
       "electron",
       "pdf2json",
       "pdfjs-dist",
+      "unpdf",
     ],
     sourcemap: "linked",
     plugins: [

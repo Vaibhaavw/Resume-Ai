@@ -6,41 +6,18 @@ import multer from "multer";
 /**
  * Robust PDF Parser Loader
  */
-import PDFParser from "pdf2json";
+import { extractText } from "unpdf";
 
 /**
- * Industry-standard PDF Text Extractor using Mozilla PDF.js
+ * Stable, Lightweight PDF Text Extractor using unpdf
  */
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   try {
-    /*
-    const data = new Uint8Array(buffer);
-    const loadingTask = pdfjs.getDocument({
-      data,
-      useSystemFonts: true,
-      disableFontFace: true,
-      isEvalSupported: false,
-    });
-    
-    const pdf = await loadingTask.promise;
-    let fullText = "";
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const strings = textContent.items
-        .map((item: any) => item.str)
-        .filter((s: string) => s.trim().length > 0);
-      
-      fullText += strings.join(" ") + "\n";
-    }
-    
-    return fullText.trim();
-    */
-    return "PDF extraction temporarily disabled for stability. Please try again in 1 minute.";
+    const { text } = await extractText(buffer);
+    return text || "";
   } catch (err: any) {
-    console.error("[ATS] PDF.js extraction failed:", err);
-    throw new Error(`PDF.js extraction failed: ${err.message}`);
+    console.error("[ATS] unpdf extraction failed:", err);
+    throw new Error(`PDF extraction failed: ${err.message}`);
   }
 }
 
@@ -82,7 +59,7 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     res.json({ 
       debug: {
         success: cleanText.length > 0,
-        method: req.file.mimetype === "application/pdf" ? "pdfjs-dist" : "text",
+        method: req.file.mimetype === "application/pdf" ? "unpdf" : "text",
         mimetype: req.file.mimetype,
         size: req.file.size,
         textLength: cleanText.length,

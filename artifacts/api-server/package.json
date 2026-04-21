@@ -25,7 +25,8 @@
     "pdf2json": "^4.0.3",
     "pdfjs-dist": "^5.6.205",
     "pino": "^9",
-    "pino-http": "^10"
+    "pino-http": "^10",
+    "unpdf": "^1.6.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",
