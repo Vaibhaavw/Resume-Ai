@@ -28,6 +28,7 @@ async function getPdfParser() {
       const pdfModule = await import("pdf-parse");
       const pdf = pdfModule.default || pdfModule;
       if (typeof pdf === "function") return pdf;
+      errors.push(`Import got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
     } catch (e: any) {
       errors.push(`Import failed: ${e.message}`);
     }
@@ -37,6 +38,7 @@ async function getPdfParser() {
       const pdf = require("pdf-parse");
       if (typeof pdf === "function") return pdf;
       if (pdf && typeof pdf.default === "function") return pdf.default;
+      errors.push(`Require got ${typeof pdf} (${Object.keys(pdf || {}).join(",")})`);
     } catch (e: any) {
       errors.push(`Require failed: ${e.message}`);
     }
