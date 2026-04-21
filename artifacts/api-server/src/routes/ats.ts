@@ -52,12 +52,13 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     let text = "";
     if (req.file.mimetype === "application/pdf") {
       try {
-        const { PDFParse } = require("pdf-parse");
-        const parser = new PDFParse({ data: req.file.buffer });
-        const result = await parser.getText();
-        text = result.text;
+        if (!pdfParser) {
+          throw new Error("PDF parser failed to initialize");
+        }
+        const data = await pdfParser(req.file.buffer);
+        text = data.text || "";
       } catch (parseErr: any) {
-        console.warn(`[ATS] Specialized PDF parse failed, falling back to string: ${parseErr.message}`);
+        console.warn(`[ATS] PDF parse failed, falling back to string: ${parseErr.message}`);
         text = req.file.buffer.toString("utf-8");
       }
     } else {
