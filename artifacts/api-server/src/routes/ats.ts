@@ -20,22 +20,31 @@ if (typeof (globalThis as any).Path2D === "undefined") {
  */
 let parserLoadError: string | null = null;
 
-function getPdfParser() {
+async function getPdfParser() {
+  const errors: string[] = [];
   try {
-    // Strategy 1: Standard require (should work if externalized and installed)
-    const pdf = require("pdf-parse");
-    if (typeof pdf === "function") return pdf;
-    if (pdf && typeof pdf.default === "function") return pdf.default;
-    
-    // Strategy 2: Direct lib path
-    const pdfLib = require("pdf-parse/lib/pdf-parse.js");
-    if (typeof pdfLib === "function") return pdfLib;
-    
-    parserLoadError = "Module found but no valid function exported";
+    // Strategy 1: Dynamic Import (best for ESM)
+    try {
+      const pdfModule = await import("pdf-parse");
+      const pdf = pdfModule.default || pdfModule;
+      if (typeof pdf === "function") return pdf;
+    } catch (e: any) {
+      errors.push(`Import failed: ${e.message}`);
+    }
+
+    // Strategy 2: Standard require
+    try {
+      const pdf = require("pdf-parse");
+      if (typeof pdf === "function") return pdf;
+      if (pdf && typeof pdf.default === "function") return pdf.default;
+    } catch (e: any) {
+      errors.push(`Require failed: ${e.message}`);
+    }
+
+    parserLoadError = errors.join(" | ");
     return null;
   } catch (err: any) {
-    parserLoadError = err.message;
-    console.error("[ATS] PDF Parser Load Error:", err);
+    parserLoadError = `Fatal loader error: ${err.message}`;
     return null;
   }
 }
@@ -62,7 +71,7 @@ router.post("/ats/extract", requireAuth, upload.single("file"), async (req: Auth
     console.log(`[ATS] Extracting text from ${req.file.originalname} (${req.file.mimetype})...`);
 
     let text = "";
-    const pdfParser = getPdfParser();
+    const pdfParser = await getPdfParser();
 
     if (req.file.mimetype === "application/pdf") {
       try {
