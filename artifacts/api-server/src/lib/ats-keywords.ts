@@ -118,14 +118,25 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     isStrictTargeted = true;
     const jdLower = jobDescription.toLowerCase();
     
-    // Extract any word starting with Capital or containing special chars (Potential Tech)
-    // and also include matches from our sector database
-    const dynamicJdKeywords = jobDescription.match(/\b([A-Z][a-zA-Z0-9.#+]*|MVC|SQL|API|WCF|XML|CSS|UI|UX|JSON)\b/g) || [];
+    // --- Smart JD Keyword Extraction with Stopwords ---
+    const stopwords = new Set([
+      "The", "We", "And", "This", "Ideal", "Key", "Apply", "Good", "Ability", "Work", 
+      "Responsibilities", "Qualifications", "Preferred", "Essential", "Required", "Strong", 
+      "Knowledge", "Experience", "Skills", "Candidate", "Role", "Involves", "Developing", 
+      "Maintaining", "Designing", "Implement", "They", "Bridge", "Ensure", "Including", 
+      "Using", "Such", "Field", "Proven", "Excellent", "Attention", "Detail", "Communication",
+      "Written", "Verbal", "Minimum", "Years", "Plus", "Related", "Computer", "Science",
+      "Technology", "Information", "Build", "Stay", "Develop", "Participate", "Contribute",
+      "Sharing", "Team", "Collaborate", "Optimize", "Ensuring"
+    ]);
+
+    const dynamicJdKeywords = (jobDescription.match(/\b([A-Z][a-zA-Z0-9.#+]*|MVC|SQL|API|WCF|XML|CSS|UI|UX|JSON|HTML5|CSS3|Angular|Vue\.js)\b/g) || [])
+      .filter(kw => !stopwords.has(kw) && kw.length > 1);
+    
     const knownJdKeywords = sectorKeywords.filter(kw => jdLower.includes(kw.toLowerCase()));
     
     // Combine and deduplicate
-    targetKeywords = Array.from(new Set([...dynamicJdKeywords, ...knownJdKeywords]))
-      .filter(kw => kw.length > 1 && !["The", "We", "And", "This", "Ideal", "Key", "Apply", "Good", "Ability", "Work"].includes(kw));
+    targetKeywords = Array.from(new Set([...dynamicJdKeywords, ...knownJdKeywords]));
   }
 
   // 1. Keyword Match (Hard Skills) - 30% Weight
@@ -197,8 +208,15 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     const resSeniority = /\b(senior|lead|staff|principal|manager|head|director)\b/i.test(textLower);
     
     let expStatus: "match" | "partial" | "gap" = "match";
-    if (jdSeniority && !resSeniority) expStatus = "gap";
-    else if (jdYearsMatch && parseInt(jdYearsMatch[1]) > 5 && !resSeniority) expStatus = "partial";
+    const requiredYears = jdYearsMatch ? parseInt(jdYearsMatch[1]) : 0;
+    
+    // Logic: If they ask for 5+ years and you don't have senior titles OR it's an internship
+    if (requiredYears >= 3 && !resSeniority) {
+      expStatus = requiredYears > 5 ? "gap" : "partial";
+    }
+    if (textLower.includes("intern") && requiredYears > 2) {
+      expStatus = "gap";
+    }
 
     // --- Education Gap Analysis ---
     const jdMasterReq = /\b(master|ms|ma|mba|postgrad)\b/i.test(jdLower);
