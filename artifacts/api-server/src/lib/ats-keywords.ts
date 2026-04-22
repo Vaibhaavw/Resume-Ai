@@ -204,9 +204,18 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     suggestions.push(msg);
   }
   
-  // 3. Targeted Suggestion
-  if (jdMissingFromResume.length > 0) {
-    suggestions.push(`Targeted Match: Your resume is missing critical terms found in the Job Description: ${jdMissingFromResume.slice(0, 3).join(", ")}.`);
+  // 3. Targeted Suggestion (Deep Gap Analysis)
+  if (jobDescription && jobDescription.length > 20) {
+    if (jdMissingFromResume.length > 0) {
+      const topMissing = jdMissingFromResume.slice(0, 3);
+      let msg = `Targeted Match: Your resume is missing critical technical terms found in the Job Description: ${topMissing.join(", ")}.`;
+      
+      // AI Generated Gap Closure Suggestion
+      msg += `\nExample: "Professional with experience in ${sector}..." → "Strategic ${sector} specialist with deep expertise in ${topMissing.join(", ")} and related modern architectures."`;
+      suggestions.push(msg);
+    } else if (customizationScore > 90) {
+      suggestions.push("Role Alignment: Your technical stack perfectly matches this job description! Ensure your professional summary highlights your most relevant achievement for this specific role.");
+    }
   }
 
   // 4. Formatting Suggestion

@@ -102,7 +102,8 @@ export default function AtsChecker() {
     scoreMutation.mutate({
       data: {
         resumeText: extractedText,
-        sector
+        sector,
+        jobDescription: isTargeted ? jobDescription : undefined
       }
     }, {
       onSuccess: (data) => setResult(data as ScoreResult),
