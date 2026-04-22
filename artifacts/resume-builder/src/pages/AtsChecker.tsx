@@ -28,6 +28,15 @@ interface ScoreResult {
   matchedKeywords: string[];
   missingKeywords: string[];
   suggestions: string[];
+  breakdown: {
+    keywordMatch: number;
+    formatting: number;
+    experience: number;
+    education: number;
+    customization: number;
+    impact: number;
+    softSkills: number;
+  };
 }
 
 // --- Internal Components ---
@@ -310,6 +319,25 @@ export default function AtsChecker() {
                 </div>
               </div>
 
+              {/* Breakdown Dashboard */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Keyword Match", value: result.breakdown.keywordMatch, icon: Brain },
+                  { label: "Formatting", value: result.breakdown.formatting, icon: FileText },
+                  { label: "Experience", value: result.breakdown.experience, icon: BarChart3 },
+                  { label: "Education", value: result.breakdown.education, icon: ShieldCheck },
+                  { label: "Customization", value: result.breakdown.customization, icon: Sparkles },
+                  { label: "Impact", value: result.breakdown.impact, icon: Zap },
+                  { label: "Soft Skills", value: result.breakdown.softSkills, icon: CheckCircle2 },
+                ].map((item, i) => (
+                  <div key={i} className="bg-card border border-border rounded-2xl p-4 flex flex-col items-center text-center">
+                    <item.icon className="w-5 h-5 text-primary/40 mb-2" />
+                    <div className="text-2xl font-black mb-1">{item.value}%</div>
+                    <div className="text-[10px] font-bold uppercase tracking-widest opacity-40">{item.label}</div>
+                  </div>
+                ))}
+              </div>
+
               {/* Actionable Suggestions */}
               <div className="grid gap-4">
                 <h3 className="text-xl font-black px-1 flex items-center gap-2">
@@ -317,7 +345,9 @@ export default function AtsChecker() {
                   Critical Enhancements
                 </h3>
                 {result.suggestions.map((suggestion, idx) => {
+                  const hasExample = suggestion.includes("\nExample: ");
                   const [main, example] = suggestion.split("\nExample: ");
+                  
                   return (
                     <div
                       key={idx}
@@ -330,7 +360,7 @@ export default function AtsChecker() {
                         <p className="text-sm font-bold pt-2 flex-grow">{main}</p>
                       </div>
 
-                      {example && (
+                      {hasExample && (
                         <div className="ml-14 bg-secondary/50 border border-border/50 rounded-xl p-4 text-xs">
                           <div className="flex items-center gap-2 mb-2 font-black uppercase tracking-tighter text-[10px] text-primary/70">
                             <Sparkles className="w-3 h-3" /> AI Optimized Suggestions

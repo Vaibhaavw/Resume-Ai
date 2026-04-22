@@ -196,7 +196,12 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
 
   // 2. Keyword Suggestion
   if (keywordScore < 80) {
-    suggestions.push(`Skill Density: Increase frequency of key technical terms like ${missingKeywords.slice(0, 2).join(", ")} to improve searchability.`);
+    const missing = missingKeywords.slice(0, 2);
+    let msg = `Skill Density: Increase frequency of key technical terms like ${missing.join(", ")} to improve searchability.`;
+    if (missing.length > 0) {
+      msg += `\nExample: "Experienced in software development..." → "Experienced in software development using ${missing.join(" and ")}..."`;
+    }
+    suggestions.push(msg);
   }
   
   // 3. Targeted Suggestion
@@ -213,7 +218,11 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
   if (overallScore < 75) {
     const weak = findWeakSentence("verb");
     let msg = "Executive Presence: Use high-impact action verbs (e.g., spearheaded, optimized) to describe your roles.";
-    if (weak) msg += `\nExample: "${weak.slice(0, 40)}..." → "Spearheaded ${weak.toLowerCase().replace(/^(helped|worked|responsible for)\s+/i, "")}..."`;
+    if (weak) {
+      msg += `\nExample: "${weak.slice(0, 40)}..." → "Spearheaded ${weak.toLowerCase().replace(/^(helped|worked|responsible for|developed|designed)\s+/i, "")}..."`;
+    } else {
+      msg += `\nExample: "Worked on API development..." → "Engineered and optimized high-performance API architectures..."`;
+    }
     suggestions.push(msg);
   }
 
