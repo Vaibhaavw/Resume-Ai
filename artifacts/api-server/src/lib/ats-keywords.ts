@@ -118,20 +118,25 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     isStrictTargeted = true;
     const jdLower = jobDescription.toLowerCase();
     
-    // --- Smart JD Keyword Extraction with Stopwords ---
+    // --- Smart JD Keyword Extraction with Massive Stopwords ---
     const stopwords = new Set([
-      "The", "We", "And", "This", "Ideal", "Key", "Apply", "Good", "Ability", "Work", 
-      "Responsibilities", "Qualifications", "Preferred", "Essential", "Required", "Strong", 
-      "Knowledge", "Experience", "Skills", "Candidate", "Role", "Involves", "Developing", 
-      "Maintaining", "Designing", "Implement", "They", "Bridge", "Ensure", "Including", 
-      "Using", "Such", "Field", "Proven", "Excellent", "Attention", "Detail", "Communication",
-      "Written", "Verbal", "Minimum", "Years", "Plus", "Related", "Computer", "Science",
-      "Technology", "Information", "Build", "Stay", "Develop", "Participate", "Contribute",
-      "Sharing", "Team", "Collaborate", "Optimize", "Ensuring"
+      "the", "we", "and", "this", "ideal", "key", "apply", "good", "ability", "work", 
+      "responsibilities", "qualifications", "preferred", "essential", "required", "strong", 
+      "knowledge", "experience", "skills", "candidate", "role", "involves", "developing", 
+      "maintaining", "designing", "implement", "they", "bridge", "ensure", "including", 
+      "using", "such", "field", "proven", "excellent", "attention", "detail", "communication",
+      "written", "verbal", "minimum", "years", "plus", "related", "computer", "science",
+      "technology", "information", "build", "stay", "develop", "participate", "contribute",
+      "sharing", "team", "collaborate", "optimize", "ensuring", "job", "title", "summary", 
+      "description", "location", "employment", "type", "full-time", "on-site", "join", 
+      "focus", "building", "high-quality", "opportunity", "enabling", "better", "closely",
+      "understand", "occasionally", "assist", "minor", "updates", "troubleshooting",
+      "awareness", "write", "verify", "integrity", "issues", "various", "various", "must-have"
     ]);
 
-    const dynamicJdKeywords = (jobDescription.match(/\b([A-Z][a-zA-Z0-9.#+]*|MVC|SQL|API|WCF|XML|CSS|UI|UX|JSON|HTML5|CSS3|Angular|Vue\.js)\b/g) || [])
-      .filter(kw => !stopwords.has(kw) && kw.length > 1);
+    // Better Regex to catch .NET, C#, C++, etc.
+    const dynamicJdKeywords = (jobDescription.match(/\b(\.NET|C#|C\+\+|[A-Z][a-zA-Z0-9.#+]*|MVC|SQL|API|WCF|XML|CSS|UI|UX|JSON|HTML5|CSS3|Angular|Vue\.js)\b/g) || [])
+      .filter(kw => !stopwords.has(kw.toLowerCase()) && kw.length > 1);
     
     const knownJdKeywords = sectorKeywords.filter(kw => jdLower.includes(kw.toLowerCase()));
     
