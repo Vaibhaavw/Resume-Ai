@@ -95,6 +95,12 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
   matchedKeywords: string[];
   missingKeywords: string[];
   suggestions: string[];
+  suitability?: string;
+  detailCheck?: {
+    skillsMatch: "match" | "partial" | "gap";
+    experienceMatch: "match" | "partial" | "gap";
+    educationMatch: "match" | "partial" | "gap";
+  };
   breakdown: { 
     keywordMatch: number; formatting: number; experience: number; 
     education: number; customization: number; impact: number; softSkills: number 
@@ -146,6 +152,10 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
   // 7. Customization (Targeted Match Bias) - 10% Weight
   let customizationScore = 55; // Baseline
   const jdMissingFromResume: string[] = [];
+  
+  // --- Targeted Match Variables ---
+  let suitability: string | undefined;
+  let detailCheck: any | undefined;
 
   if (jobDescription && jobDescription.length > 20) {
     const jdLower = jobDescription.toLowerCase();
@@ -161,7 +171,30 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
 
     customizationScore = jdSpecificKeywords.length > 0
       ? Math.round((jdMatches.length / jdSpecificKeywords.length) * 100)
-      : 80; // Default high if no specific keys found in JD
+      : 80;
+
+    // --- Experience Gap Analysis ---
+    const jdYearsMatch = jdLower.match(/(\d+)\+?\s*years/);
+    const jdSeniority = /\b(senior|lead|staff|principal|manager|head|director)\b/i.test(jdLower);
+    const resSeniority = /\b(senior|lead|staff|principal|manager|head|director)\b/i.test(textLower);
+    
+    let expStatus: "match" | "partial" | "gap" = "match";
+    if (jdSeniority && !resSeniority) expStatus = "gap";
+    else if (jdYearsMatch && parseInt(jdYearsMatch[1]) > 5 && !resSeniority) expStatus = "partial";
+
+    // --- Education Gap Analysis ---
+    const jdMasterReq = /\b(master|ms|ma|mba|postgrad)\b/i.test(jdLower);
+    const resMaster = /\b(master|ms|ma|mba|postgrad)\b/i.test(textLower);
+    
+    let eduStatus: "match" | "partial" | "gap" = "match";
+    if (jdMasterReq && !resMaster) eduStatus = "gap";
+    else if (!hasAcademicDegree) eduStatus = "partial";
+
+    detailCheck = {
+      skillsMatch: customizationScore > 80 ? "match" : (customizationScore > 40 ? "partial" : "gap"),
+      experienceMatch: expStatus,
+      educationMatch: eduStatus,
+    };
   }
 
   // FINAL SCORING (Weighted Model)
@@ -174,6 +207,13 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     (softSkillsScore * 0.10) + 
     (customizationScore * 0.10)
   );
+
+  if (jobDescription) {
+    if (overallScore > 85) suitability = "Highly Suitable";
+    else if (overallScore > 70) suitability = "Strong Match";
+    else if (overallScore > 50) suitability = "Moderate Match";
+    else suitability = "Potential Gap";
+  }
 
   // --- Contextual Example Helpers ---
   const sentences = resumeText.split(/[.!?]\s+/).filter(s => s.length > 10);
@@ -240,6 +280,8 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     matchedKeywords: Array.from(new Set(matchedKeywords)).slice(0, 15),
     missingKeywords: Array.from(new Set([...missingKeywords, ...jdMissingFromResume])).slice(0, 10),
     suggestions,
+    suitability,
+    detailCheck,
     breakdown: {
       keywordMatch: keywordScore,
       formatting: formattingScore,

@@ -28,6 +28,12 @@ interface ScoreResult {
   matchedKeywords: string[];
   missingKeywords: string[];
   suggestions: string[];
+  suitability?: string;
+  detailCheck?: {
+    skillsMatch: "match" | "partial" | "gap";
+    experienceMatch: "match" | "partial" | "gap";
+    educationMatch: "match" | "partial" | "gap";
+  };
   breakdown: {
     keywordMatch: number;
     formatting: number;
@@ -319,6 +325,45 @@ export default function AtsChecker() {
                   </div>
                 </div>
               </div>
+
+              {/* Role Suitability Dashboard (Targeted Match Only) */}
+              {isTargeted && result.suitability && (
+                <div className="bg-card border border-border rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-center">
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="text-xs font-bold uppercase tracking-widest opacity-40 mb-2">Role Suitability</div>
+                    <div className={cn(
+                      "text-3xl font-black mb-2",
+                      result.score > 80 ? "text-emerald-500" : (result.score > 60 ? "text-amber-500" : "text-red-500")
+                    )}>
+                      {result.suitability}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Based on our AI analysis, your profile {result.score > 70 ? 'is a strong contender' : 'has some gaps to bridge'} for this specific role.
+                    </p>
+                  </div>
+                  
+                  <div className="w-full md:w-auto flex flex-col gap-3 min-w-[240px]">
+                    <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-1 px-1">Alignment Checklist</div>
+                    {[
+                      { label: "Skills Match", status: result.detailCheck?.skillsMatch, icon: Brain },
+                      { label: "Experience Match", status: result.detailCheck?.experienceMatch, icon: BarChart3 },
+                      { label: "Education Match", status: result.detailCheck?.educationMatch, icon: ShieldCheck },
+                    ].map((item, i) => (
+                      <div key={i} className="bg-secondary/20 border border-border/50 rounded-xl px-4 py-3 flex items-center gap-3">
+                        <item.icon className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-xs font-bold flex-grow">{item.label}</span>
+                        {item.status === "match" ? (
+                          <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                        ) : item.status === "partial" ? (
+                          <Zap className="w-4 h-4 text-amber-500" />
+                        ) : (
+                          <AlertCircle className="w-4 h-4 text-red-500" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Breakdown Dashboard */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
