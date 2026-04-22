@@ -106,13 +106,32 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
     education: number; customization: number; impact: number; softSkills: number 
   };
 } {
-  const { keywords } = getKeywordsForSector(sector);
+  const { keywords: sectorKeywords } = getKeywordsForSector(sector);
   const textLower = resumeText.toLowerCase();
+  
+  // --- Smart JD Keyword Extraction ---
+  let targetKeywords = sectorKeywords;
+  const jdMissingFromResume: string[] = [];
+  let isStrictTargeted = false;
+
+  if (jobDescription && jobDescription.length > 20) {
+    isStrictTargeted = true;
+    const jdLower = jobDescription.toLowerCase();
+    
+    // Extract any word starting with Capital or containing special chars (Potential Tech)
+    // and also include matches from our sector database
+    const dynamicJdKeywords = jobDescription.match(/\b([A-Z][a-zA-Z0-9.#+]*|MVC|SQL|API|WCF|XML|CSS|UI|UX|JSON)\b/g) || [];
+    const knownJdKeywords = sectorKeywords.filter(kw => jdLower.includes(kw.toLowerCase()));
+    
+    // Combine and deduplicate
+    targetKeywords = Array.from(new Set([...dynamicJdKeywords, ...knownJdKeywords]))
+      .filter(kw => kw.length > 1 && !["The", "We", "And", "This", "Ideal", "Key", "Apply", "Good", "Ability", "Work"].includes(kw));
+  }
 
   // 1. Keyword Match (Hard Skills) - 30% Weight
   const matchedKeywords: string[] = [];
   const missingKeywords: string[] = [];
-  for (const kw of keywords) {
+  for (const kw of targetKeywords) {
     const regex = new RegExp(`\\b${kw.toLowerCase().replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}\\b`, 'g');
     if (regex.test(textLower)) {
       matchedKeywords.push(kw);
@@ -120,7 +139,13 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
       missingKeywords.push(kw);
     }
   }
-  const keywordScore = keywords.length > 0 ? Math.min(100, Math.round((matchedKeywords.length / Math.min(keywords.length, 12)) * 100)) : 0;
+
+  // If in Targeted Match, the missingKeywords ARE the jdMissingFromResume
+  if (isStrictTargeted) {
+    jdMissingFromResume.push(...missingKeywords);
+  }
+
+  const keywordScore = targetKeywords.length > 0 ? Math.min(100, Math.round((matchedKeywords.length / Math.min(targetKeywords.length, 15)) * 100)) : 0;
 
   // 2. Formatting & Structure - 15% Weight
   const segments = ["education", "experience", "skills", "summary", "contact", "projects", "certifications"];
@@ -151,26 +176,19 @@ export function calculateAtsScore(resumeText: string, sector: string, jobDescrip
 
   // 7. Customization (Targeted Match Bias) - 10% Weight
   let customizationScore = 55; // Baseline
-  const jdMissingFromResume: string[] = [];
   
   // --- Targeted Match Variables ---
   let suitability: string | undefined;
   let detailCheck: any | undefined;
 
-  if (jobDescription && jobDescription.length > 20) {
+  if (isStrictTargeted && jobDescription) {
     const jdLower = jobDescription.toLowerCase();
     
-    // Extract potential technical keywords from JD (Capitalized words or sector-specific ones)
-    const jdSpecificKeywords = keywords.filter(kw => jdLower.includes(kw.toLowerCase()));
-    
     // Check which JD-specific keywords are in the resume
-    const jdMatches = jdSpecificKeywords.filter(kw => textLower.includes(kw.toLowerCase()));
-    const jdMissing = jdSpecificKeywords.filter(kw => !textLower.includes(kw.toLowerCase()));
+    const jdMatches = targetKeywords.filter(kw => textLower.includes(kw.toLowerCase()));
     
-    jdMissingFromResume.push(...jdMissing);
-
-    customizationScore = jdSpecificKeywords.length > 0
-      ? Math.round((jdMatches.length / jdSpecificKeywords.length) * 100)
+    customizationScore = targetKeywords.length > 0
+      ? Math.round((jdMatches.length / targetKeywords.length) * 100)
       : 80;
 
     // --- Experience Gap Analysis ---
