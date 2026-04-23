@@ -91,7 +91,7 @@ export function EditableField({
   const isEmpty = !value.trim();
 
   return (
-    <span className="relative group/ef inline-block" style={style}>
+    <span className={cn("relative group/ef", multiline ? "block" : "inline-block")} style={style}>
       {/* @ts-ignore – dynamic tag */}
       <Tag
         ref={ref as any}
@@ -109,14 +109,14 @@ export function EditableField({
           handleInput();
         }}
         className={cn(
-          "outline-none cursor-text transition-all duration-150 relative min-h-[1.2em]",
-          "before:pointer-events-none",
-          isEmpty && !focused && "before:content-[attr(data-placeholder)] before:text-slate-300 before:absolute before:top-0 before:left-0",
+          "outline-none cursor-text transition-all duration-150 relative min-h-[1.5em] w-full",
+          "before:pointer-events-none block rounded-sm px-1",
+          isEmpty && !focused && "before:content-[attr(data-placeholder)] before:text-slate-400 before:absolute before:top-0 before:left-1 before:italic bg-slate-50/30 border border-dashed border-slate-200",
           focused
-            ? "ring-2 ring-blue-400 ring-offset-1 rounded-sm bg-blue-50/30"
+            ? "ring-2 ring-blue-500 ring-offset-2 bg-white shadow-md z-10 border-transparent"
             : hasError
-            ? "ring-1 ring-red-400 rounded-sm bg-red-50/20"
-            : "hover:ring-1 hover:ring-slate-300 hover:rounded-sm",
+            ? "ring-2 ring-red-400 bg-red-50/20 border-red-200"
+            : "hover:bg-slate-50 hover:border-slate-300",
           className
         )}
       />

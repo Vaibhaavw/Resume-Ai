@@ -281,7 +281,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
   return (
     <div className="bg-white text-slate-900 min-h-[1056px] p-12 print:p-0 font-sans leading-snug">
       <header className="mb-8 border-b-2 border-slate-900 pb-6">
-        <h1 className="text-4xl font-extrabold tracking-tight uppercase mb-2">
+        <h1 className="text-4xl font-extrabold tracking-tight uppercase mb-4">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
@@ -301,60 +301,70 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
           {(pi.linkedIn || editable) && (
             <div className="flex items-center gap-1.5">
               <Linkedin className="w-3 h-3 text-slate-400" />
-              <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn URL" />
+              <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="linkedin.com/in/username" />
             </div>
           )}
         </div>
       </header>
-      <main className="space-y-8">
-        <section>
-          <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Summary</h2>
-          <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Write your professional summary…" className="text-[11px] leading-relaxed text-slate-700 block" />
+
+      <main className="space-y-10">
+        <section className="relative group/section">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2">Professional Summary</h2>
+          <div className="bg-slate-50/30 rounded-lg p-4 border border-transparent hover:border-slate-100 transition-all">
+            <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Enter a compelling summary of your professional background..." className="text-[12px] leading-relaxed text-slate-600 block w-full" />
+          </div>
         </section>
+
         {(data.projects.length > 0 || editable) && (
-          <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-5 border-b-2 border-slate-900/10 pb-1">Technical Projects</h2>
-            <div className="space-y-4">
+          <section className="relative group/section">
+            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2 text-slate-800">Technical Projects</h2>
+            <div className="space-y-6">
               <ProjectBlocks data={data} handlers={handlers} errors={errors} editable={editable}
                 renderItem={(proj, i, ef, bulletsEl) => (
-                  <div>
-                    <div className="font-bold text-[13px]">
-                      <EditableField value={proj.title} onChange={(v) => ef("title", v)} editable={editable} placeholder="Project Title" />
-                      {" "}{(proj.link || editable) && <EditableField value={proj.link ?? ""} onChange={(v) => ef("link", v)} editable={editable} placeholder="Project URL" className="text-slate-400 font-normal" />}
+                  <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all">
+                    <div className="flex justify-between items-center mb-2 font-bold text-[13px]">
+                      <EditableField value={proj.title} onChange={(v) => ef("title", v)} editable={editable} placeholder="Project Name" className="text-slate-900" />
+                      {(proj.link || editable) && (
+                        <EditableField value={proj.link ?? ""} onChange={(v) => ef("link", v)} editable={editable} placeholder="github.com/project" className="text-[10px] text-blue-500 font-medium" />
+                      )}
                     </div>
-                    <div className="mt-1 list-disc pl-4 text-[10px] text-slate-600">{bulletsEl}</div>
+                    <div className="text-[11px] text-slate-600 leading-relaxed">{bulletsEl}</div>
                   </div>
                 )}
               />
             </div>
           </section>
         )}
-        <section>
-          <h2 className="text-sm font-black uppercase tracking-widest mb-6 border-b-2 border-slate-900/10 pb-1">Professional Experience</h2>
-          <div className="space-y-6">
+
+        <section className="relative group/section">
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2 text-slate-800">Professional Experience</h2>
+          <div className="space-y-8">
             <ExperienceBlocks data={data} handlers={handlers} errors={errors} editable={editable}
               renderItem={(exp, i, ef, df, bulletsEl) => (
-                <div>
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-bold text-[13px]">
+                <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all">
+                  <div className="flex justify-between items-baseline mb-2">
+                    <h3 className="font-bold text-[14px] text-slate-900">
                       <EditableField value={exp.title} onChange={(v) => ef("title", v)} editable={editable} error={errors?.[`experience.${i}.title`]} placeholder="Job Title" />
                     </h3>
-                    <span className="text-[10px] font-bold text-slate-400">
-                      <DateField value={exp.startDate} onChange={(v) => df("startDate", v)} editable={editable} placeholder="Start" /> — <DateField value={exp.endDate ?? ""} onChange={(v) => df("endDate", v)} editable={editable} allowPresent placeholder="End" />
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      <DateField value={exp.startDate} onChange={(v) => df("startDate", v)} editable={editable} placeholder="START" /> — <DateField value={exp.endDate ?? ""} onChange={(v) => df("endDate", v)} editable={editable} allowPresent placeholder="END" />
                     </span>
                   </div>
-                  <div className="text-[11px] font-bold text-slate-500 mb-2">
-                    <EditableField value={exp.company} onChange={(v) => ef("company", v)} editable={editable} error={errors?.[`experience.${i}.company`]} placeholder="Company" /> | <EditableField value={exp.location} onChange={(v) => ef("location", v)} editable={editable} placeholder="Location" />
+                  <div className="text-[11px] font-bold text-slate-600 mb-3 flex gap-2">
+                    <EditableField value={exp.company} onChange={(v) => ef("company", v)} editable={editable} error={errors?.[`experience.${i}.company`]} placeholder="Company Name" />
+                    <span className="text-slate-300">|</span>
+                    <EditableField value={exp.location} onChange={(v) => ef("location", v)} editable={editable} placeholder="Location" className="font-medium text-slate-400" />
                   </div>
-                  <div className="pl-4 text-[11px] text-slate-600">{bulletsEl}</div>
+                  <div className="text-[11px] text-slate-600 leading-relaxed">{bulletsEl}</div>
                 </div>
               )}
             />
           </div>
         </section>
-        <div className="grid grid-cols-2 gap-8">
-          <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Skills</h2>
+
+        <div className="grid grid-cols-2 gap-12">
+          <section className="relative group/section">
+            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2 text-slate-800">Skills</h2>
             <SkillsEditor 
               skills={data.skills} 
               onAdd={(s) => handlers?.addSkill(s)} 
@@ -362,32 +372,32 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
               editable={editable} 
               suggestions={suggestions} 
               error={errors?.["skills"]} 
-              className="flex flex-wrap gap-2 text-[10px] text-slate-700" 
+              className="flex flex-wrap gap-2" 
               renderTag={(skill, onRemove) => (
-                <span className="bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-tighter">
+                <span className="bg-slate-900 text-white px-2.5 py-1 rounded text-[10px] font-bold flex items-center gap-1.5 uppercase tracking-tighter shadow-sm">
                   {skill}
                   {editable && onRemove && (
-                    <button onClick={onRemove} className="text-slate-400 hover:text-red-500 transition-colors">×</button>
+                    <button onClick={onRemove} className="text-white/40 hover:text-red-400 transition-colors">×</button>
                   )}
                 </span>
               )}
             />
           </section>
-          <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Education</h2>
-            <div className="space-y-4">
-              <EducationBlocks data={data} handlers={handlers} errors={errors} editable={editable}
-                renderItem={(edu, i, ef) => (
-                  <div>
-                    <div className="font-bold text-[11px]"><EditableField value={edu.institution} onChange={(v) => ef("institution", v)} editable={editable} error={errors?.[`education.${i}.institution`]} placeholder="Institution" /></div>
-                    <div className="text-[10px] text-slate-500 italic"><EditableField value={edu.degree} onChange={(v) => ef("degree", v)} editable={editable} placeholder="Degree" /> in <EditableField value={edu.field} onChange={(v) => ef("field", v)} editable={editable} placeholder="Field" /></div>
-                    <div className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
-                      <DateField value={edu.startDate} onChange={(v) => ef("startDate", v)} editable={editable} placeholder="Start" /> — <DateField value={edu.endDate ?? ""} onChange={(v) => ef("endDate", v)} editable={editable} allowPresent placeholder="End" />
-                    </div>
+          <section className="relative group/section">
+            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2 text-slate-800">Education</h2>
+            <EducationBlocks data={data} handlers={handlers} errors={errors} editable={editable}
+              renderItem={(edu, i, ef) => (
+                <div className="mb-4">
+                  <div className="font-bold text-[12px] text-slate-900"><EditableField value={edu.institution} onChange={(v) => ef("institution", v)} editable={editable} error={errors?.[`education.${i}.institution`]} placeholder="University Name" /></div>
+                  <div className="text-[11px] text-slate-500 font-medium mb-1">
+                    <EditableField value={edu.degree} onChange={(v) => ef("degree", v)} editable={editable} placeholder="Degree" /> in <EditableField value={edu.field} onChange={(v) => ef("field", v)} editable={editable} placeholder="Field of Study" />
                   </div>
-                )}
-              />
-            </div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                    <DateField value={edu.startDate} onChange={(v) => ef("startDate", v)} editable={editable} placeholder="Start" /> — <DateField value={edu.endDate ?? ""} onChange={(v) => ef("endDate", v)} editable={editable} allowPresent placeholder="Graduation" />
+                  </div>
+                </div>
+              )}
+            />
           </section>
         </div>
       </main>
@@ -421,33 +431,46 @@ export function ExecutiveClassic({ data, palette, editable, handlers, errors, su
         </div>
       </header>
       <div className="space-y-10">
-        <section>
-          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-slate-100 flex items-center justify-between">Executive Profile <div className="h-px flex-1 ml-4 bg-slate-100" /></h2>
-          <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Executive summary…" className="text-[12px] leading-relaxed italic text-slate-600 px-4 block" />
+        <section className="relative group/section">
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-slate-200 flex items-center justify-between text-slate-400">
+            Executive Profile 
+            <div className="h-px flex-1 ml-4 bg-slate-100" />
+          </h2>
+          <div className="bg-slate-50/30 rounded-lg p-4 border border-transparent hover:border-slate-100 transition-all">
+            <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Describe your professional journey, key strengths, and career goals..." className="text-[12px] leading-relaxed italic text-slate-600 block w-full" />
+          </div>
         </section>
-        <section>
-          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-slate-100 flex items-center justify-between">Core Competencies <div className="h-px flex-1 ml-4 bg-slate-100" /></h2>
-          <SkillsEditor 
-            skills={data.skills} 
-            onAdd={(s) => handlers?.addSkill(s)} 
-            onRemove={(s) => handlers?.removeSkill(s)} 
-            editable={editable} 
-            suggestions={suggestions} 
-            error={errors?.["skills"]}
-            className="flex flex-wrap gap-2 px-4"
-            renderTag={(skill, onRemove) => (
-              <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded-md text-[10px] font-bold text-slate-700 flex items-center gap-1.5 shadow-sm">
-                <span className="w-1 h-1 bg-slate-400 rounded-full" /> {skill}
-                {editable && onRemove && (
-                  <button onClick={onRemove} className="ml-1 text-slate-400 hover:text-red-500 transition-colors">×</button>
-                )}
-              </span>
-            )}
-          />
+        <section className="relative group/section">
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-slate-200 flex items-center justify-between text-slate-400">
+            Core Competencies 
+            <div className="h-px flex-1 ml-4 bg-slate-100" />
+          </h2>
+          <div className="bg-slate-50/30 rounded-lg p-4 border border-transparent hover:border-slate-100 transition-all">
+            <SkillsEditor 
+              skills={data.skills} 
+              onAdd={(s) => handlers?.addSkill(s)} 
+              onRemove={(s) => handlers?.removeSkill(s)} 
+              editable={editable} 
+              suggestions={suggestions} 
+              error={errors?.["skills"]}
+              className="flex flex-wrap gap-2"
+              renderTag={(skill, onRemove) => (
+                <span className="bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-700 flex items-center gap-2 shadow-sm hover:shadow-md transition-all">
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" /> {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="ml-1 text-slate-300 hover:text-red-500 transition-colors">×</button>
+                  )}
+                </span>
+              )}
+            />
+          </div>
         </section>
-        <section>
-          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-6 border-b border-slate-100 flex items-center justify-between">Professional Experience <div className="h-px flex-1 ml-4 bg-slate-100" /></h2>
-          <div className="space-y-8">
+        <section className="relative group/section">
+          <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-6 border-b border-slate-200 flex items-center justify-between text-slate-400">
+            Professional Experience 
+            <div className="h-px flex-1 ml-4 bg-slate-100" />
+          </h2>
+          <div className="space-y-10">
             <ExperienceBlocks data={data} handlers={handlers} errors={errors} editable={editable}
               renderItem={(exp, i, ef, df, bulletsEl) => (
                 <div>

@@ -32,7 +32,7 @@ export function EditableSection({
 
   return (
     <div
-      className={cn("relative", className)}
+      className={cn("relative transition-all duration-200 rounded-xl", hovered && "bg-slate-50/50 ring-1 ring-slate-100 shadow-inner", className)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -42,16 +42,16 @@ export function EditableSection({
       {onAdd && (
         <div
           className={cn(
-            "mt-2 flex justify-center transition-all duration-150",
-            hovered ? "opacity-100" : "opacity-0 pointer-events-none"
+            "mt-4 mb-2 flex justify-center transition-all duration-200",
+            hovered ? "opacity-100" : "opacity-40"
           )}
         >
           <button
             type="button"
             onClick={onAdd}
-            className="flex items-center gap-1.5 rounded-full border border-dashed border-blue-300 bg-blue-50 px-3 py-1 text-[11px] font-semibold text-blue-600 hover:bg-blue-100 hover:border-blue-400 transition-all shadow-sm"
+            className="flex items-center gap-2 rounded-lg border-2 border-dashed border-blue-200 bg-white px-4 py-2 text-[12px] font-bold text-blue-600 hover:bg-blue-50 hover:border-blue-400 hover:shadow-md transition-all group/addbtn"
           >
-            <Plus className="h-3 w-3" />
+            <Plus className="h-4 w-4 transition-transform group-hover/addbtn:rotate-90" />
             {addLabel}
           </button>
         </div>
@@ -146,7 +146,7 @@ export function EditableBulletList({
   }
 
   return (
-    <div className={className}>
+    <div className={cn("group/bullets space-y-1", className)}>
       {bullets.map((bullet, i) => (
         <div
           key={i}
@@ -166,12 +166,12 @@ export function EditableBulletList({
               data-placeholder={placeholder}
               onBlur={(e) => onChange(i, e.currentTarget.textContent || "")}
               className={cn(
-                "outline-none min-w-[4rem] min-h-[1.2em] cursor-text rounded px-0.5 transition-all duration-100",
-                "before:pointer-events-none",
-                !bullet && "before:content-[attr(data-placeholder)] before:text-slate-300 before:absolute before:top-0 before:left-0",
+                "outline-none min-w-[4rem] min-h-[1.5em] cursor-text rounded px-1 transition-all duration-100 block w-full",
+                "before:pointer-events-none relative",
+                !bullet && "before:content-[attr(data-placeholder)] before:text-slate-400 before:absolute before:top-0 before:left-1 before:italic bg-slate-50/30 border border-dashed border-slate-200",
                 errors[i]
-                  ? "ring-1 ring-red-400 bg-red-50/20"
-                  : "hover:ring-1 hover:ring-slate-200 focus:ring-2 focus:ring-blue-400 focus:bg-blue-50/20",
+                  ? "ring-2 ring-red-400 bg-red-50/20 border-red-200"
+                  : "hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:shadow-md",
                 itemClassName
               )}
               dangerouslySetInnerHTML={{ __html: bullet }}
@@ -203,10 +203,10 @@ export function EditableBulletList({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-1.5 flex items-center gap-1 text-[10px] font-semibold text-blue-500 hover:text-blue-700 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+        className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-blue-600 hover:text-blue-800 transition-all opacity-40 group-hover/bullets:opacity-100 focus:opacity-100 bg-blue-50/20 hover:bg-blue-50 px-3 py-1 rounded border border-dashed border-blue-200"
       >
         <Plus className="h-3 w-3" />
-        Add bullet
+        Add Bullet Point
       </button>
     </div>
   );
