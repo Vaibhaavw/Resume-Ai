@@ -8,11 +8,10 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useCompleteOnboarding, useListTemplates } from "@workspace/api-client-react";
+import { useCompleteOnboarding } from "@workspace/api-client-react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
-import { Sparkles, ArrowRight, ArrowLeft, CheckCircle } from "lucide-react";
-import ResumePreview from "@/components/ResumePreview";
+import { Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
 
 const sectors = [
   { id: "tech", label: "Technology", desc: "Software, IT, Data, AI", emoji: "💻" },
@@ -42,9 +41,7 @@ export default function Onboarding() {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [selectedSector, setSelectedSector] = useState("");
-  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
   const onboardingMutation = useCompleteOnboarding();
-  const { data: templates } = useListTemplates();
 
   const form = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
@@ -93,7 +90,7 @@ export default function Onboarding() {
       data: {
         sector: selectedSector,
         personalInfo: data,
-        templateId: selectedTemplateId || undefined,
+        templateId: undefined,
       }
     }, {
       onSuccess: () => {
@@ -110,8 +107,6 @@ export default function Onboarding() {
       },
     });
   };
-
-  const freeTemplates = templates?.filter(t => t.tier === "free") || [];
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -164,9 +159,9 @@ export default function Onboarding() {
       )}
 
       {step === 2 && (
-        <div className="flex gap-0 min-h-[calc(100vh-72px)]">
+        <div className="flex justify-center min-h-[calc(100vh-72px)]">
           {/* Form */}
-          <div className="flex-1 px-8 py-8 overflow-y-auto max-w-xl">
+          <div className="w-full max-w-2xl px-8 py-12 overflow-y-auto">
             <div className="flex items-center gap-3 mb-6">
               <button
                 onClick={() => setStep(1)}
@@ -279,30 +274,6 @@ export default function Onboarding() {
                   )}
                 />
 
-                {/* Template selection */}
-                <div>
-                  <label className="text-sm font-medium mb-3 block">Choose a starter template</label>
-                  <div className="grid grid-cols-3 gap-3">
-                    {freeTemplates.slice(0, 3).map((t) => (
-                      <button
-                        key={t.id}
-                        type="button"
-                        onClick={() => setSelectedTemplateId(t.id)}
-                        data-testid={`card-template-${t.id}`}
-                        className={cn(
-                          "p-3 rounded-lg border-2 text-left transition-all text-sm",
-                          selectedTemplateId === t.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
-                        )}
-                      >
-                        <div className="font-medium text-xs mb-0.5">{t.name}</div>
-                        <div className="text-xs text-muted-foreground">{t.style}</div>
-                        {selectedTemplateId === t.id && (
-                          <CheckCircle className="w-3.5 h-3.5 text-primary mt-1.5" />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
                 <Button
                   type="submit"
@@ -318,18 +289,6 @@ export default function Onboarding() {
             </Form>
           </div>
 
-          {/* Live preview */}
-          <div className="hidden lg:flex flex-col w-[480px] bg-muted/50 border-l border-border">
-            <div className="px-6 py-4 border-b border-border bg-card flex items-center justify-between">
-              <span className="text-sm font-semibold">Live Preview</span>
-              <span className="text-xs text-muted-foreground">Updates as you type</span>
-            </div>
-            <div className="flex-1 overflow-y-auto p-6">
-              <div className="transform scale-75 origin-top-left w-[133%]">
-                <ResumePreview data={previewData} templateId={selectedTemplateId || 1} />
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>
