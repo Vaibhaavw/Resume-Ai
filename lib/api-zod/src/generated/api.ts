@@ -106,7 +106,7 @@ export const UpdatePasswordResponse = zod.object({
 /**
  * @summary List all resumes for the current user
  */
-export const listResumesResponseDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const listResumesResponseDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const ListResumesResponseItem = zod.object({
@@ -123,7 +123,7 @@ export const ListResumesResponseItem = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(listResumesResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -161,7 +161,7 @@ export const ListResumesResponse = zod.array(ListResumesResponseItem)
 /**
  * @summary Create a new resume
  */
-export const createResumeBodyDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const createResumeBodyDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const CreateResumeBody = zod.object({
@@ -176,7 +176,7 @@ export const CreateResumeBody = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(createResumeBodyDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -199,7 +199,7 @@ export const CreateResumeBody = zod.object({
   "skills": zod.array(zod.string()),
   "projects": zod.array(zod.object({
     "title": zod.string(),
-    "link": zod.string().url().nullish(),
+    "link": zod.string().min(3).nullish(),
     "bullets": zod.array(zod.string())
   })).optional(),
   "certifications": zod.array(zod.object({
@@ -218,7 +218,7 @@ export const GetResumeParams = zod.object({
   "id": zod.coerce.number()
 })
 
-export const getResumeResponseDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const getResumeResponseDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const GetResumeResponse = zod.object({
@@ -235,7 +235,7 @@ export const GetResumeResponse = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(getResumeResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -276,7 +276,7 @@ export const UpdateResumeParams = zod.object({
   "id": zod.coerce.number()
 })
 
-export const updateResumeBodyDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const updateResumeBodyDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const UpdateResumeBody = zod.object({
@@ -291,7 +291,7 @@ export const UpdateResumeBody = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(updateResumeBodyDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -321,7 +321,7 @@ export const UpdateResumeBody = zod.object({
   "status": zod.enum(['draft', 'complete']).optional()
 })
 
-export const updateResumeResponseDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const updateResumeResponseDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const UpdateResumeResponse = zod.object({
@@ -338,7 +338,7 @@ export const UpdateResumeResponse = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(updateResumeResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -516,7 +516,7 @@ export const UpdateSubscriptionResponse = zod.object({
 /**
  * @summary Get user dashboard summary
  */
-export const getDashboardSummaryResponseRecentResumeOneDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const getDashboardSummaryResponseRecentResumeOneDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const GetDashboardSummaryResponse = zod.object({
@@ -540,7 +540,7 @@ export const GetDashboardSummaryResponse = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(getDashboardSummaryResponseRecentResumeOneDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),
@@ -605,7 +605,7 @@ export const CompleteOnboardingBody = zod.object({
   "templateId": zod.number().optional()
 })
 
-export const completeOnboardingResponseDataPersonalInfoPhoneRegExp = new RegExp('^\\d{10}$');
+export const completeOnboardingResponseDataPersonalInfoPhoneRegExp = new RegExp('^[\\+\\d\\s\\-\\(\\)]{7,25}$');
 
 
 export const CompleteOnboardingResponse = zod.object({
@@ -622,7 +622,7 @@ export const CompleteOnboardingResponse = zod.object({
   "countryCode": zod.string().optional(),
   "phone": zod.string().regex(completeOnboardingResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
-  "linkedIn": zod.string().url().nullish(),
+  "linkedIn": zod.string().min(3).nullish(),
   "websites": zod.array(zod.string().url()).optional(),
   "summary": zod.string()
 }),

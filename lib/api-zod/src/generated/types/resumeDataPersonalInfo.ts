@@ -11,7 +11,7 @@ export type ResumeDataPersonalInfo = {
   lastName: string;
   email: string;
   countryCode?: string;
-  /** @pattern ^\d{10}$ */
+  /** @pattern ^[\+\d\s\-\(\)]{7,25}$ */
   phone: string;
   location: string;
   /** @nullable */
