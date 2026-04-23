@@ -330,7 +330,6 @@ export default function ResumeEditor() {
               AI Enhance
             </Button>
 
-            <TemplateGallery selectedId={templateId} onSelect={setTemplateId} userTier={user?.tier || "free"} />
 
             <Button type="button" size="sm" variant="outline" onClick={handleExportPDF} className="gap-1.5 text-xs h-8">
               <Download className="w-3.5 h-3.5" />
