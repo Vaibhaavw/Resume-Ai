@@ -124,7 +124,7 @@ export const ListResumesResponseItem = zod.object({
   "phone": zod.string().regex(listResumesResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -177,7 +177,7 @@ export const CreateResumeBody = zod.object({
   "phone": zod.string().regex(createResumeBodyDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -236,7 +236,7 @@ export const GetResumeResponse = zod.object({
   "phone": zod.string().regex(getResumeResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -292,7 +292,7 @@ export const UpdateResumeBody = zod.object({
   "phone": zod.string().regex(updateResumeBodyDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -339,7 +339,7 @@ export const UpdateResumeResponse = zod.object({
   "phone": zod.string().regex(updateResumeResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -541,7 +541,7 @@ export const GetDashboardSummaryResponse = zod.object({
   "phone": zod.string().regex(getDashboardSummaryResponseRecentResumeOneDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
@@ -623,7 +623,7 @@ export const CompleteOnboardingResponse = zod.object({
   "phone": zod.string().regex(completeOnboardingResponseDataPersonalInfoPhoneRegExp),
   "location": zod.string(),
   "linkedIn": zod.string().min(3).nullish(),
-  "websites": zod.array(zod.string().url()).optional(),
+  "websites": zod.array(zod.string().min(3)).optional(),
   "summary": zod.string()
 }),
   "education": zod.array(zod.object({
