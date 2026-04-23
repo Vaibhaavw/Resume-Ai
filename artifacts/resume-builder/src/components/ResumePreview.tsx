@@ -405,10 +405,19 @@ export function ExecutiveClassic({ data, palette, editable, handlers, errors, su
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[11px] font-bold flex justify-center flex-wrap gap-4 uppercase tracking-[0.05em] text-slate-500">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
-          <span>•</span><span>{phone(pi)}</span><span>•</span>
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[11px] font-bold flex justify-center flex-wrap gap-x-6 gap-y-2 uppercase tracking-[0.05em] text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-400" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-slate-400" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
       </header>
       <div className="space-y-10">
@@ -418,13 +427,21 @@ export function ExecutiveClassic({ data, palette, editable, handlers, errors, su
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-[0.2em] mb-4 border-b border-slate-100 flex items-center justify-between">Core Competencies <div className="h-px flex-1 ml-4 bg-slate-100" /></h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]}
-            className="grid grid-cols-3 gap-y-2 gap-x-8 px-4"
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]}
+            className="flex flex-wrap gap-2 px-4"
             renderTag={(skill, onRemove) => (
-              <div className="text-[10px] font-bold text-slate-700 flex items-center gap-2">
-                <span className="w-1 h-1 bg-slate-300 rounded-full" /> {skill}
-                {editable && onRemove && <button onClick={onRemove} className="ml-auto text-red-300 hover:text-red-500 text-[9px]">×</button>}
-              </div>
+              <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded-md text-[10px] font-bold text-slate-700 flex items-center gap-1.5 shadow-sm">
+                <span className="w-1 h-1 bg-slate-400 rounded-full" /> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="ml-1 text-slate-400 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
             )}
           />
         </section>
@@ -478,10 +495,19 @@ export function AcademicGraduate({ data, palette, editable, handlers, errors, su
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[11px] flex justify-center gap-4 text-slate-500 font-bold uppercase tracking-widest">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
-          <span>|</span><span>{phone(pi)}</span><span>|</span>
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[11px] flex justify-center gap-6 text-slate-500 font-bold uppercase tracking-widest">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
       </header>
       <div className="space-y-10">
@@ -506,12 +532,23 @@ export function AcademicGraduate({ data, palette, editable, handlers, errors, su
         </section>
         <section>
           <h2 className="bg-slate-900 text-white text-[10px] font-black uppercase px-4 py-1 tracking-[0.3em] mb-4 text-center">Core Competencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap justify-center gap-2 px-8" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag bg-slate-100 border text-slate-700 font-bold px-3 py-1 rounded text-[10px] uppercase tracking-tighter flex items-center gap-1">
-              {skill}
-              {editable && onRemove && <button onClick={onRemove} className="text-red-300 hover:text-red-500 text-[9px] opacity-0 group-hover/stag:opacity-100">×</button>}
-            </span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap justify-center gap-2 px-8" 
+            renderTag={(skill, onRemove) => (
+              <span className="relative group/stag bg-slate-900 text-white font-bold px-3 py-1.5 rounded text-[10px] uppercase tracking-wider flex items-center gap-2 shadow-md">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/50 hover:text-red-400 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="bg-slate-900 text-white text-[10px] font-black uppercase px-4 py-1 tracking-[0.3em] mb-6">Internships & Professional Experience</h2>
@@ -552,11 +589,25 @@ export function ProfessionalHybrid({ data, palette, editable, handlers, errors, 
           </h1>
           <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Professional summary…" className="text-[11px] text-slate-400 font-bold leading-relaxed block" />
         </div>
-        <div className="text-right text-[10px] font-black space-y-1 uppercase tracking-widest text-slate-400">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
-          <div>{phone(pi)}</div>
-          <div><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
-          {(pi.linkedIn || editable) && <div className="text-slate-800 font-black"><PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn" /></div>}
+        <div className="text-right text-[10px] font-black space-y-2 uppercase tracking-widest text-slate-400">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+            <Mail className="w-3 h-3" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <span>{phone(pi)}</span>
+            <Phone className="w-3 h-3" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+            <MapPin className="w-3 h-3" />
+          </div>
+          {(pi.linkedIn || editable) && (
+            <div className="flex items-center justify-end gap-2 text-slate-800 font-black">
+              <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn" />
+              <Linkedin className="w-3 h-3" />
+            </div>
+          )}
         </div>
       </header>
       <div className="space-y-12">
@@ -587,12 +638,23 @@ export function ProfessionalHybrid({ data, palette, editable, handlers, errors, 
           <h2 className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300 mb-8 border-l-4 border-slate-900 pl-4">Skills & Education</h2>
           <div className="grid grid-cols-12 gap-12">
             <div className="col-span-7">
-              <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2 content-start" renderTag={(skill, onRemove) => (
-                <span className="relative group/stag px-3 py-1 bg-slate-50 border rounded text-[10px] font-bold text-slate-600 flex items-center gap-1">
-                  {skill}
-                  {editable && onRemove && <button onClick={onRemove} className="text-red-300 hover:text-red-500 opacity-0 group-hover/stag:opacity-100">×</button>}
-                </span>
-              )} />
+              <SkillsEditor 
+                skills={data.skills} 
+                onAdd={(s) => handlers?.addSkill(s)} 
+                onRemove={(s) => handlers?.removeSkill(s)} 
+                editable={editable} 
+                suggestions={suggestions} 
+                error={errors?.["skills"]} 
+                className="flex flex-wrap gap-2 content-start" 
+                renderTag={(skill, onRemove) => (
+                  <span className="relative group/stag px-3 py-1.5 bg-slate-900 text-white rounded font-bold text-[10px] flex items-center gap-2 uppercase tracking-tighter shadow-sm">
+                    {skill}
+                    {editable && onRemove && (
+                      <button onClick={onRemove} className="text-white/50 hover:text-red-400 transition-colors">×</button>
+                    )}
+                  </span>
+                )} 
+              />
             </div>
             <div className="col-span-5 space-y-6">
               <EducationBlocks data={data} handlers={handlers} errors={errors} editable={editable}
@@ -625,10 +687,19 @@ export function MedicalHealthcare({ data, palette, editable, handlers, errors, s
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
         <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mt-2">Healthcare Professional / Clinical Specialist</p>
-        <div className="text-[10px] flex gap-4 mt-1 text-slate-400 font-bold uppercase">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
-          <span>{phone(pi)}</span>
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[10px] flex gap-6 mt-2 text-slate-400 font-bold uppercase">
+          <div className="flex items-center gap-1.5 text-emerald-700">
+            <Mail className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5 text-emerald-700">
+            <Phone className="w-3.5 h-3.5" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-emerald-700">
+            <MapPin className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
       </header>
       <div className="space-y-8">
@@ -666,7 +737,23 @@ export function MedicalHealthcare({ data, palette, editable, handlers, errors, s
         </section>
         <section>
           <h2 className="text-xs font-black uppercase bg-emerald-50 text-emerald-800 px-3 py-1 inline-block mb-3">Skills</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2 px-4" />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-emerald-50 border border-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-full text-[10px] uppercase tracking-tight flex items-center gap-2">
+                <span className="w-1 h-1 bg-emerald-400 rounded-full" /> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-emerald-300 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )}
+          />
         </section>
       </div>
     </div>
@@ -683,17 +770,37 @@ export function FinanceAnalyst({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-right text-[10px] font-black uppercase">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
-          <div>{phone(pi)}</div>
+        <div className="text-right text-[10px] font-black uppercase space-y-1.5">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+            <Mail className="w-3.5 h-3.5 text-slate-400" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <span>{phone(pi)}</span>
+            <Phone className="w-3.5 h-3.5 text-slate-400" />
+          </div>
         </div>
       </header>
       <div className="space-y-10">
         <section>
           <h2 className="text-sm font-black uppercase border-b border-slate-300 pb-1 mb-4">Core Financial Competencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-4 gap-2 text-[10px] font-bold text-slate-700 px-4" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag flex items-center gap-1">• {skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100 ml-1">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 text-[10px] font-bold text-slate-700 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-3 py-1.5 rounded font-black flex items-center gap-2 uppercase tracking-tighter shadow-sm">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-sm font-black uppercase border-b border-slate-300 pb-1 mb-6">Investment & Operational Experience</h2>
@@ -744,16 +851,36 @@ export function LegalProfessional({ data, palette, editable, handlers, errors, s
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
         <div className="text-[10px] font-bold flex justify-center gap-6">
-          <span>{phone(pi)}</span>
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
         </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] mb-4 text-center">Practice Areas</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex justify-center flex-wrap gap-x-8 gap-y-2" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag text-[11px] font-medium italic text-slate-700 flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100 text-[9px]">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex justify-center flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="relative group/stag bg-slate-50 border border-slate-200 px-3 py-1 rounded-md text-[10px] font-bold text-slate-700 flex items-center gap-1.5 shadow-sm uppercase tracking-tighter">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="ml-1 text-slate-400 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[11px] font-black uppercase tracking-[0.2em] mb-8 border-b border-black">Representative Experience</h2>
@@ -806,9 +933,15 @@ export function SaaSProductLead({ data, palette, editable, handlers, errors, sug
           </h1>
           <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="One-line tagline…" className="text-sm font-bold text-slate-400 uppercase tracking-widest block" />
         </div>
-        <div className="text-right text-[10px] font-bold text-slate-400 space-y-1">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
-          <div>{phone(pi)}</div>
+        <div className="text-right text-[10px] font-bold text-slate-400 space-y-2">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+            <Mail className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <span>{phone(pi)}</span>
+            <Phone className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
         </div>
       </header>
       <div className="space-y-12">
@@ -831,7 +964,23 @@ export function SaaSProductLead({ data, palette, editable, handlers, errors, sug
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest text-indigo-600 mb-6">Skills</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-indigo-600 text-white px-3 py-1.5 rounded-full font-black text-[10px] uppercase tracking-tight flex items-center gap-2 shadow-sm">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-indigo-200 hover:text-white transition-colors">×</button>
+                )}
+              </span>
+            )}
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest text-indigo-600 mb-6">Education</h2>
@@ -861,7 +1010,16 @@ export function ConsultantStrategy({ data, palette, editable, handlers, errors, 
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
         <div className="h-1 w-20 bg-slate-900 mb-6" />
-        <div className="text-[10px] text-slate-400 font-bold flex gap-4 mb-4"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /><span>•</span><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
+        <div className="text-[10px] text-slate-400 font-bold flex gap-6 mb-4">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
         <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Professional summary…" className="text-[11px] font-medium text-slate-400 max-w-[80%] block" />
       </header>
       <div className="space-y-16">
@@ -886,7 +1044,23 @@ export function ConsultantStrategy({ data, palette, editable, handlers, errors, 
         </section>
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 border-b pb-2">Competencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-100 border border-slate-200 text-slate-700 px-3 py-1 rounded-md font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
+                <span className="w-1 h-1 bg-slate-400 rounded-full" /> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-slate-400 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )}
+          />
         </section>
       </div>
     </div>
@@ -905,9 +1079,15 @@ export function OperationsDirector({ data, palette, editable, handlers, errors, 
               <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" className="text-white" />
             </h1>
           </div>
-          <div className="text-right text-[10px] space-y-1">
-            <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-slate-300" /></div>
-            <div className="text-slate-300">{phone(pi)}</div>
+          <div className="text-right text-[10px] space-y-2">
+            <div className="flex items-center justify-end gap-2">
+              <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-slate-300" />
+              <Mail className="w-3.5 h-3.5 text-slate-500" />
+            </div>
+            <div className="flex items-center justify-end gap-2 text-slate-300">
+              <span>{phone(pi)}</span>
+              <Phone className="w-3.5 h-3.5 text-slate-500" />
+            </div>
           </div>
         </header>
         <div className="space-y-12">
@@ -934,7 +1114,23 @@ export function OperationsDirector({ data, palette, editable, handlers, errors, 
           </section>
           <section>
             <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-4 border-slate-900 pb-2">Skills</h2>
-            <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" />
+            <SkillsEditor 
+              skills={data.skills} 
+              onAdd={(s) => handlers?.addSkill(s)} 
+              onRemove={(s) => handlers?.removeSkill(s)} 
+              editable={editable} 
+              suggestions={suggestions} 
+              error={errors?.["skills"]} 
+              className="flex flex-wrap gap-2" 
+              renderTag={(skill, onRemove) => (
+                <span className="bg-slate-900 text-white px-3 py-1.5 rounded-md font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-md">
+                  {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                  )}
+                </span>
+              )}
+            />
           </section>
         </div>
       </div>
@@ -951,7 +1147,16 @@ export function SalesHero({ data, palette, editable, handlers, errors, suggestio
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[10px] flex gap-4 text-slate-400"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /><span>•</span><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
+        <div className="text-[10px] flex gap-6 text-slate-400 font-bold uppercase">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-rose-400" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-rose-400" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
       </header>
       <div className="space-y-16">
         <section>
@@ -975,7 +1180,23 @@ export function SalesHero({ data, palette, editable, handlers, errors, suggestio
         </section>
         <section>
           <h2 className="text-sm font-black uppercase mb-6 border-l-4 border-rose-600 pl-4">Skills</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-rose-600 text-white px-3 py-1.5 rounded-md font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg italic">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-rose-200 hover:text-white transition-colors">×</button>
+                )}
+              </span>
+            )}
+          />
         </section>
       </div>
     </div>
@@ -993,17 +1214,37 @@ export function ProjectManager({ data, palette, editable, handlers, errors, sugg
             <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
           </h1>
         </div>
-        <div className="text-right text-[10px] font-bold">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
-          <div><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
+        <div className="text-right text-[10px] font-bold space-y-2">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+            <Mail className="w-3.5 h-3.5 text-slate-400" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+            <MapPin className="w-3.5 h-3.5 text-slate-400" />
+          </div>
         </div>
       </header>
       <div className="space-y-12 px-4">
         <section>
           <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-6 flex items-center gap-4">Methodologies <div className="h-px flex-1 bg-slate-100" /></h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag px-4 py-1.5 border-2 border-slate-900 text-[10px] font-black uppercase flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100 ml-1">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-4 py-1.5 rounded-md text-[10px] font-black uppercase flex items-center gap-2 shadow-md">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-8 flex items-center gap-4">Strategic Deliverables <div className="h-px flex-1 bg-slate-100" /></h2>
@@ -1040,17 +1281,37 @@ export function CustomerSuccess({ data, palette, editable, handlers, errors, sug
         </h1>
         <div className="h-2 w-32 bg-blue-100 rounded-full mb-6" />
         <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Summary…" className="text-[11px] font-bold text-slate-400 leading-relaxed max-w-[70%] block" />
-        <div className="text-[10px] text-slate-400 flex gap-4 mt-2"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /><span>•</span><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
+        <div className="text-[10px] text-slate-400 flex gap-6 mt-2">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-blue-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-blue-300" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
       </header>
       <div className="space-y-16">
         <section>
           <h2 className="text-sm font-black uppercase tracking-widest text-blue-900 mb-6">Success Portfolio</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-3 gap-6" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag p-4 bg-blue-50 rounded-2xl border border-blue-100 text-center">
-              <div className="text-[10px] font-black uppercase text-blue-900">{skill}</div>
-              {editable && onRemove && <button onClick={onRemove} className="absolute top-1 right-1 text-red-400 hover:text-red-600 text-[9px] opacity-0 group-hover/stag:opacity-100">×</button>}
-            </div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-blue-900 text-white px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-wider shadow-md flex items-center gap-2">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-blue-300 hover:text-white transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-sm font-black uppercase tracking-widest text-blue-900 mb-6">Career Trajectory</h2>
@@ -1087,14 +1348,37 @@ export function CreativeTech({ data, palette, editable, handlers, errors, sugges
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last" />
         </h2>
         <div className="text-[10px] font-black uppercase tracking-[0.5em] bg-slate-900 text-white p-2 inline-block ml-8">Technical Product Designer / Dev</div>
-        <div className="text-[10px] text-slate-400 flex gap-4 mt-4 ml-8"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /><span>{phone(pi)}</span></div>
+        <div className="text-[10px] text-slate-400 flex gap-6 mt-4 ml-8">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-orange-400" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-orange-400" />
+            <span>{phone(pi)}</span>
+          </div>
+        </div>
       </header>
       <div className="space-y-12 ml-8">
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-6 underline decoration-slate-200 underline-offset-8">Stack & Systems</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-4" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag text-[11px] font-black border-b-2 border-slate-100 flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-orange-500 text-white px-3 py-1.5 rounded-sm font-black text-[10px] uppercase tracking-tighter flex items-center gap-2 shadow-sm">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-orange-200 hover:text-white transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-8 underline decoration-slate-200 underline-offset-8">Shipped Experience</h2>
@@ -1127,16 +1411,41 @@ export function RetailManager({ data, palette, editable, handlers, errors, sugge
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /> | {phone(pi)} | <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
-        </p>
+        <div className="text-sm font-bold text-slate-400 uppercase tracking-widest flex justify-center gap-6">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-4 h-4 text-slate-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-4 h-4 text-slate-300" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-slate-300" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-xs font-black uppercase bg-slate-100 p-2 mb-8 text-center tracking-[0.2em]">Managerial Core Competencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-2 gap-x-12 gap-y-2 px-8" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag text-[11px] font-bold text-slate-600 border-b border-slate-50 pb-1 flex justify-between items-center">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-8" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-3 py-1.5 rounded font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-sm">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase bg-slate-100 p-2 mb-10 text-center tracking-[0.2em]">Management Experience</h2>
@@ -1171,14 +1480,37 @@ export function AIResearchLead({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[10px] flex gap-4 text-slate-400 mt-2"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /><span>{phone(pi)}</span></div>
+        <div className="text-[10px] flex gap-6 text-slate-400 mt-2">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-slate-300" />
+            <span>{phone(pi)}</span>
+          </div>
+        </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-6 text-slate-300">Mathematical & Algorithm Base</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-x-8 gap-y-2" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag text-[11px] font-bold text-slate-700 flex items-center gap-1">[{skill}]{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-3 py-1.5 rounded font-bold text-[10px] flex items-center gap-2 uppercase tracking-widest shadow-md">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/50 hover:text-red-400 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-8 text-slate-300">Research & Model Artifacts</h2>
@@ -1213,14 +1545,37 @@ export function BackendSystems({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[10px] text-slate-400"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /> | <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" /></div>
+        <div className="text-[10px] text-slate-400 flex gap-6 mt-4">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-500" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-500" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
       </header>
       <div className="space-y-12 px-6">
         <section>
           <h2 className="text-xs font-black uppercase mb-4 text-slate-900">{"> "}system_stack</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-3 gap-2" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag text-[10px] font-bold flex items-center gap-1">$ {skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-3 py-1.5 rounded-sm font-bold text-[10px] flex items-center gap-2 shadow-sm">
+                <span className="text-emerald-500">$</span> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase mb-8 text-slate-900">{"> "}deployment_history</h2>
@@ -1258,17 +1613,37 @@ export function FrontendArchitect({ data, palette, editable, handlers, errors, s
           </h1>
           <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Summary…" className="text-xs font-bold text-slate-400 leading-relaxed italic block" />
         </div>
-        <div className="text-right text-[10px] font-black uppercase space-y-1">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
-          <div>{phone(pi)}</div>
+        <div className="text-right text-[10px] font-black uppercase space-y-2">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+            <Mail className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <span>{phone(pi)}</span>
+            <Phone className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
         </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-8 border-b pb-2">Design & Dev Stack</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-[10px] font-bold tracking-tighter flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-indigo-600 text-white px-3 py-1.5 rounded-full text-[10px] font-bold tracking-tight flex items-center gap-2 shadow-sm">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-indigo-200 hover:text-white transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 mb-10 border-b pb-2">Product Shipments</h2>
@@ -1301,16 +1676,37 @@ export function FullStackScale({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /> | <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex gap-6">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest mb-6 border-b-2 border-slate-100 pb-2">Full Lifecycle Stack</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-2 gap-x-12 gap-y-2 px-4" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag text-[11px] font-bold text-slate-600 flex items-center gap-3"><span className="w-1.5 h-1.5 bg-slate-200 rounded-full" /> {skill}{editable && onRemove && <button onClick={onRemove} className="ml-auto text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-3 py-1.5 rounded-md font-black text-[10px] uppercase tracking-widest flex items-center gap-2 shadow-lg">
+                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" /> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest mb-10 border-b-2 border-slate-100 pb-2">Engineering Trajectory</h2>
@@ -1345,14 +1741,37 @@ export function DataInsight({ data, palette, editable, handlers, errors, suggest
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[10px] font-bold text-slate-400 mt-2"><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /></div>
+        <div className="text-[10px] font-bold text-slate-400 mt-2 flex justify-center gap-6">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
+        </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-[11px] font-black uppercase tracking-[0.3em] mb-6 text-center">Inference Engine</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex justify-center flex-wrap gap-8" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag text-[11px] font-medium italic text-slate-700 flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex justify-center flex-wrap gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-50 border border-slate-200 text-slate-700 px-3 py-1 rounded font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-slate-400 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[11px] font-black uppercase tracking-[0.3em] mb-10 border-b border-slate-100 pb-2">Case Studies & Insights</h2>
@@ -1385,14 +1804,35 @@ export function CloudDevOps({ data, palette, editable, handlers, errors, suggest
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[9px] font-black bg-slate-900 text-white px-3 py-1 uppercase tracking-widest">Infra & Automation</div>
+        <div className="text-[10px] font-black bg-slate-900 text-white px-3 py-1 uppercase tracking-widest flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-400" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <span className="text-slate-600">|</span>
+          <span>Infra & Automation</span>
+        </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest mb-6 flex items-center gap-4">01. Automation Stack <div className="h-px flex-1 bg-slate-100" /></h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-2 px-4" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag bg-slate-50 border border-slate-100 px-3 py-1 rounded text-[10px] font-bold text-slate-600 flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-50 border border-slate-200 px-3 py-1 rounded text-[10px] font-black text-slate-600 flex items-center gap-2 shadow-sm">
+                <span className="w-1.5 h-1.5 bg-slate-300 rounded-full" /> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-slate-400 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase tracking-widest mb-8 flex items-center gap-4">02. Site Reliability & CI/CD <div className="h-px flex-1 bg-slate-100" /></h2>
@@ -1428,17 +1868,37 @@ export function CyberSecurity({ data, palette, editable, handlers, errors, sugge
           </h1>
           <p className="text-[10px] font-bold tracking-[0.4em] uppercase text-slate-500 mt-2">Information Security & Threat Intelligence</p>
         </div>
-        <div className="text-right text-[9px] font-black space-y-1 text-slate-400">
-          <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-slate-400" /></div>
-          <div>SECURED HOST: <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" className="text-slate-400" /></div>
+        <div className="text-right text-[9px] font-black space-y-2 text-slate-400">
+          <div className="flex items-center justify-end gap-2">
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-slate-400" />
+            <Mail className="w-3.5 h-3.5 text-emerald-500" />
+          </div>
+          <div className="flex items-center justify-end gap-2">
+            <span>SECURED HOST: <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" className="text-slate-400" /></span>
+            <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+          </div>
         </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 mb-6">{"// "}HARDENING_PROTOCOLS</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-4 gap-4 px-4" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag border-b border-slate-800 text-[10px] font-bold py-1 flex items-center gap-1">_ {skill}{editable && onRemove && <button onClick={onRemove} className="ml-auto text-red-500 hover:text-red-400 opacity-0 group-hover/stag:opacity-100">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-800 text-emerald-500 border border-emerald-900/30 px-3 py-1 rounded font-mono text-[10px] flex items-center gap-2 shadow-lg">
+                <span className="animate-pulse">{">"}</span> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-emerald-900 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500 mb-10">{"// "}INCIDENT_RESPONSE_LOG</h2>
@@ -1473,19 +1933,42 @@ export function UniversalStarter({ data, palette, editable, handlers, errors, su
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[10px] font-bold flex justify-center gap-6 text-slate-400 uppercase tracking-widest">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
-          <span>{phone(pi)}</span>
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[10px] font-bold flex justify-center gap-6 text-slate-400 uppercase tracking-widest items-center">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-200" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-slate-200" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-200" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
         <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Summary…" className="text-[11px] text-slate-500 mt-4 max-w-xl mx-auto block" />
       </header>
       <div className="space-y-10 max-w-4xl mx-auto">
         <section>
           <h2 className="text-center text-[10px] font-black uppercase tracking-[0.5em] text-slate-300 mb-6">Foundational Knowledge</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap justify-center gap-2" renderTag={(skill, onRemove) => (
-            <span className="relative group/stag bg-slate-50 border border-slate-100 px-4 py-1.5 rounded-full text-[10px] font-bold text-slate-600 flex items-center gap-1">{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</span>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap justify-center gap-2" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-900 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-md">
+                {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-white/40 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-center text-[10px] font-black uppercase tracking-[0.5em] text-slate-300 mb-10 border-y py-4 border-slate-50">Academic & Personal Projects</h2>
@@ -1531,14 +2014,31 @@ export function TechnicalEngineer({ data, palette, editable, handlers, errors, s
           </h1>
           <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Tagline…" className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block" />
         </div>
-        <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-right text-[10px] font-bold text-slate-300 underline decoration-slate-100 underline-offset-4" />
+        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
+          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" className="text-right text-[10px] font-bold text-slate-300 underline decoration-slate-100 underline-offset-4" />
+          <Mail className="w-3.5 h-3.5 text-slate-300" />
+        </div>
       </header>
       <div className="space-y-12">
         <section>
           <h2 className="text-xs font-black uppercase bg-slate-900 text-white px-4 py-1 tracking-[0.3em] mb-6">Technical Proficiencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-4 gap-4 px-4 font-mono" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag text-[10px] font-bold flex items-center gap-2"><span className="text-slate-200">/</span>{skill}{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap gap-2 px-4" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-50 border border-slate-200 px-3 py-1.5 rounded font-mono text-[10px] font-bold text-slate-700 flex items-center gap-2">
+                <span className="text-slate-300">#</span> {skill}
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-slate-300 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-xs font-black uppercase bg-slate-100 text-slate-900 px-4 py-1 tracking-[0.3em] mb-8">Lab & Academic Projects</h2>
@@ -1588,17 +2088,42 @@ export function NonTechGeneral({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[11px] font-medium text-slate-500 italic mt-6">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" /> | {phone(pi)} | <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+        <div className="text-[11px] font-medium text-slate-500 italic mt-6 flex justify-center gap-6">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="Email" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3.5 h-3.5 text-slate-300" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-slate-300" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="Location" />
+          </div>
         </div>
         <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Summary…" className="text-[11px] text-slate-500 mt-4 block max-w-xl mx-auto" />
       </header>
       <div className="space-y-16 max-w-3xl mx-auto">
         <section>
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] mb-10 text-center text-slate-300">Core Soft Competencies</h2>
-          <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="grid grid-cols-2 gap-x-16 gap-y-4 px-8 text-center" renderTag={(skill, onRemove) => (
-            <div className="relative group/stag text-[11px] font-bold text-slate-700 italic border-b border-slate-50 pb-2 flex items-center justify-between">"{skill}"{editable && onRemove && <button onClick={onRemove} className="text-red-400 hover:text-red-600 opacity-0 group-hover/stag:opacity-100 text-[9px]">×</button>}</div>
-          )} />
+          <SkillsEditor 
+            skills={data.skills} 
+            onAdd={(s) => handlers?.addSkill(s)} 
+            onRemove={(s) => handlers?.removeSkill(s)} 
+            editable={editable} 
+            suggestions={suggestions} 
+            error={errors?.["skills"]} 
+            className="flex flex-wrap justify-center gap-2 px-8" 
+            renderTag={(skill, onRemove) => (
+              <span className="bg-slate-50 border-b-2 border-slate-200 text-slate-700 px-4 py-2 font-bold text-[11px] italic flex items-center gap-2">
+                "{skill}"
+                {editable && onRemove && (
+                  <button onClick={onRemove} className="text-slate-300 hover:text-red-500 transition-colors">×</button>
+                )}
+              </span>
+            )} 
+          />
         </section>
         <section>
           <h2 className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-10">Leadership & Academic Record</h2>
@@ -1639,10 +2164,23 @@ export function WordDarkContemporary({ data, editable, handlers, errors, suggest
     <div className="w-[800px] h-[1131px] bg-slate-900 text-slate-200 overflow-hidden text-[12px] font-sans p-12 leading-relaxed">
       <div className="mb-6">
         <h1 className="text-4xl text-teal-500 font-serif mb-2"><PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} /> <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} /></h1>
-        <div className="text-xs text-slate-400 space-x-2">
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
-          {pi.phone && <><span>|</span> <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} /></>}
-          {pi.email && <><span>|</span> <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} /></>}
+        <div className="text-xs text-slate-400 flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-teal-500" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
+          </div>
+          {pi.phone && (
+            <div className="flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5 text-teal-500" />
+              <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
+          {pi.email && (
+            <div className="flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5 text-teal-500" />
+              <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
         </div>
       </div>
 
@@ -1693,7 +2231,21 @@ export function WordDarkContemporary({ data, editable, handlers, errors, suggest
         <section>
           <h2 className="text-lg font-serif text-teal-500 border-b border-teal-900 pb-1 mb-3">Skills & Abilities</h2>
           <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-slate-300 text-[11px]">
-            <SkillsEditor skills={skills} onAdd={(s) => handlers?.addSkill?.(s)} onRemove={(s) => handlers?.removeSkill?.(s)} editable={editable} />
+            <SkillsEditor 
+              skills={skills} 
+              onAdd={(s) => handlers?.addSkill?.(s)} 
+              onRemove={(s) => handlers?.removeSkill?.(s)} 
+              editable={editable} 
+              className="flex flex-wrap gap-2" 
+              renderTag={(skill, onRemove) => (
+                <span className="bg-teal-900/50 text-teal-400 border border-teal-800 px-3 py-1 rounded text-[10px] font-bold flex items-center gap-2 shadow-sm">
+                  {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="text-teal-700 hover:text-red-500 transition-colors">×</button>
+                  )}
+                </span>
+              )} 
+            />
           </div>
         </section>
       </div>
@@ -1707,10 +2259,23 @@ export function WordChronologicalClassic({ data, editable, handlers, errors, sug
     <div className="w-[800px] h-[1131px] bg-white text-black overflow-hidden font-serif p-12 text-[12px] leading-normal">
       <div className="text-center mb-6">
         <h1 className="text-3xl font-black mb-2 uppercase"><PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} /> <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} /></h1>
-        <div className="text-xs space-x-2">
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
-          {pi.phone && <><span>|</span> <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} /></>}
-          {pi.email && <><span>|</span> <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} /></>}
+        <div className="text-xs flex justify-center gap-6">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
+          </div>
+          {pi.phone && (
+            <div className="flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5" />
+              <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
+          {pi.email && (
+            <div className="flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5" />
+              <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
         </div>
       </div>
 
@@ -1764,7 +2329,21 @@ export function WordChronologicalClassic({ data, editable, handlers, errors, sug
         <section>
           <h2 className="text-sm font-bold uppercase border-b border-black pb-1 mb-2">Skills</h2>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px]">
-             <SkillsEditor skills={skills} onAdd={(s) => handlers?.addSkill?.(s)} onRemove={(s) => handlers?.removeSkill?.(s)} editable={editable} />
+              <SkillsEditor 
+                skills={skills} 
+                onAdd={(s) => handlers?.addSkill?.(s)} 
+                onRemove={(s) => handlers?.removeSkill?.(s)} 
+                editable={editable} 
+                className="flex flex-wrap gap-2" 
+                renderTag={(skill, onRemove) => (
+                  <span className="bg-slate-50 border border-slate-200 text-slate-800 px-3 py-1 rounded text-[10px] font-bold flex items-center gap-2">
+                    {skill}
+                    {editable && onRemove && (
+                      <button onClick={onRemove} className="text-slate-300 hover:text-red-500 transition-colors">×</button>
+                    )}
+                  </span>
+                )} 
+              />
           </div>
         </section>
       </div>
@@ -1780,16 +2359,42 @@ export function WordColorSidebar({ data, editable, handlers, errors, suggestions
         <div>
           <h2 className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-4 border-b border-sky-400/30 pb-2">Contact</h2>
           <div className="space-y-3 text-[10px]">
-            <div><PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} /></div>
-            <div><PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} /></div>
-            <div><PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} /></div>
-            <div><PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn" /></div>
+            <div className="flex items-center gap-2 font-bold">
+              <MapPin className="w-3.5 h-3.5 text-sky-400" />
+              <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+            <div className="flex items-center gap-2 font-bold">
+              <Phone className="w-3.5 h-3.5 text-sky-400" />
+              <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+            <div className="flex items-center gap-2 font-bold">
+              <Mail className="w-3.5 h-3.5 text-sky-400" />
+              <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+            <div className="flex items-center gap-2 font-bold">
+              <Linkedin className="w-3.5 h-3.5 text-sky-400" />
+              <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn" />
+            </div>
           </div>
         </div>
         <div>
           <h2 className="text-xs font-bold uppercase tracking-wider text-sky-300 mb-4 border-b border-sky-400/30 pb-2">Skills</h2>
           <div className="space-y-1 text-[10px]">
-             <SkillsEditor skills={skills} onAdd={(s) => handlers?.addSkill?.(s)} onRemove={(s) => handlers?.removeSkill?.(s)} editable={editable} />
+             <SkillsEditor 
+              skills={skills} 
+              onAdd={(s) => handlers?.addSkill?.(s)} 
+              onRemove={(s) => handlers?.removeSkill?.(s)} 
+              editable={editable} 
+              className="flex flex-wrap gap-2" 
+              renderTag={(skill, onRemove) => (
+                <span className="bg-sky-700 text-sky-50 px-2 py-1 rounded text-[9px] font-bold flex items-center gap-1.5 shadow-sm">
+                  {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="text-sky-400 hover:text-red-400 transition-colors">×</button>
+                  )}
+                </span>
+              )} 
+            />
           </div>
         </div>
         <div>
@@ -1862,10 +2467,23 @@ export function WordInitialsGeometric({ data, editable, handlers, errors, sugges
       {/* Main content body */}
       <div className="flex-1 pt-16 pr-16 pb-12">
         <h1 className="text-4xl text-emerald-800 font-bold mb-2"><PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} /> <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} /></h1>
-        <div className="text-[10px] text-slate-500 flex gap-3 mb-6">
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
-          {pi.phone && <><span>•</span> <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} /></>}
-          {pi.email && <><span>•</span> <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} /></>}
+        <div className="text-[10px] text-slate-500 flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} />
+          </div>
+          {pi.phone && (
+            <div className="flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5 text-emerald-600" />
+              <PIField pi={pi} field="phone" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
+          {pi.email && (
+            <div className="flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5 text-emerald-600" />
+              <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} />
+            </div>
+          )}
         </div>
         
         <div className="text-[11px] text-slate-600 leading-relaxed bg-white p-4 rounded border-l-4 border-emerald-500 shadow-sm mb-8">
@@ -1916,7 +2534,21 @@ export function WordInitialsGeometric({ data, editable, handlers, errors, sugges
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center uppercase tracking-widest text-xs"><span className="w-6 h-px bg-emerald-500 mr-3"></span> Skills</h2>
           <div className="flex flex-wrap gap-2 text-[10px]">
-             <SkillsEditor skills={skills} onAdd={(s) => handlers?.addSkill?.(s)} onRemove={(s) => handlers?.removeSkill?.(s)} editable={editable} />
+             <SkillsEditor 
+              skills={skills} 
+              onAdd={(s) => handlers?.addSkill?.(s)} 
+              onRemove={(s) => handlers?.removeSkill?.(s)} 
+              editable={editable} 
+              className="flex flex-wrap gap-2" 
+              renderTag={(skill, onRemove) => (
+                <span className="bg-emerald-600 text-white px-3 py-1.5 rounded-full font-bold flex items-center gap-2 shadow-sm">
+                  {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="text-emerald-200 hover:text-white transition-colors">×</button>
+                  )}
+                </span>
+              )} 
+            />
           </div>
         </section>
       </div>
