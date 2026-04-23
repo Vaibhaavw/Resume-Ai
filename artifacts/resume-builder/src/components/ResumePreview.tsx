@@ -3,6 +3,7 @@ import { EditableField } from "./canvas/EditableField";
 import { DateField } from "./canvas/DateField";
 import { EditableSection, EditableSectionItem, EditableBulletList } from "./canvas/EditableSection";
 import { SkillsEditor } from "./canvas/SkillsEditor";
+import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
 // ─── Type definitions ───────────────────────────────────────────────────────
 
@@ -284,21 +285,35 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
           <PIField pi={pi} field="lastName" handlers={handlers} errors={errors} editable={editable} placeholder="Last Name" />
         </h1>
-        <div className="text-[11px] font-medium flex flex-wrap gap-x-4 gap-y-1 text-slate-600">
-          <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="email@example.com" />
-          <span>{phone(pi)}</span>
-          <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="City, Country" />
-          {(pi.linkedIn || editable) && <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn URL" />}
+        <div className="text-[11px] font-medium flex flex-wrap gap-x-6 gap-y-2 text-slate-600">
+          <div className="flex items-center gap-1.5">
+            <Mail className="w-3 h-3 text-slate-400" />
+            <PIField pi={pi} field="email" handlers={handlers} errors={errors} editable={editable} placeholder="email@example.com" />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="w-3 h-3 text-slate-400" />
+            <span>{phone(pi)}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3 h-3 text-slate-400" />
+            <PIField pi={pi} field="location" handlers={handlers} errors={errors} editable={editable} placeholder="City, Country" />
+          </div>
+          {(pi.linkedIn || editable) && (
+            <div className="flex items-center gap-1.5">
+              <Linkedin className="w-3 h-3 text-slate-400" />
+              <PIField pi={pi} field="linkedIn" handlers={handlers} errors={errors} editable={editable} placeholder="LinkedIn URL" />
+            </div>
+          )}
         </div>
       </header>
       <main className="space-y-8">
         <section>
-          <h2 className="text-sm font-black uppercase tracking-widest mb-3 border-b border-slate-200">Summary</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Summary</h2>
           <PIField pi={pi} field="summary" handlers={handlers} errors={errors} editable={editable} multiline as="p" placeholder="Write your professional summary…" className="text-[11px] leading-relaxed text-slate-700 block" />
         </section>
         {(data.projects.length > 0 || editable) && (
           <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b border-slate-200">Technical Projects</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest mb-5 border-b-2 border-slate-900/10 pb-1">Technical Projects</h2>
             <div className="space-y-4">
               <ProjectBlocks data={data} handlers={handlers} errors={errors} editable={editable}
                 renderItem={(proj, i, ef, bulletsEl) => (
@@ -315,7 +330,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
           </section>
         )}
         <section>
-          <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b border-slate-200">Professional Experience</h2>
+          <h2 className="text-sm font-black uppercase tracking-widest mb-6 border-b-2 border-slate-900/10 pb-1">Professional Experience</h2>
           <div className="space-y-6">
             <ExperienceBlocks data={data} handlers={handlers} errors={errors} editable={editable}
               renderItem={(exp, i, ef, df, bulletsEl) => (
@@ -339,11 +354,27 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
         </section>
         <div className="grid grid-cols-2 gap-8">
           <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-3 border-b border-slate-200">Skills</h2>
-            <SkillsEditor skills={data.skills} onAdd={(s) => handlers?.addSkill(s)} onRemove={(s) => handlers?.removeSkill(s)} editable={editable} suggestions={suggestions} error={errors?.["skills"]} className="flex flex-wrap gap-1.5 text-[11px] text-slate-700" />
+            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Skills</h2>
+            <SkillsEditor 
+              skills={data.skills} 
+              onAdd={(s) => handlers?.addSkill(s)} 
+              onRemove={(s) => handlers?.removeSkill(s)} 
+              editable={editable} 
+              suggestions={suggestions} 
+              error={errors?.["skills"]} 
+              className="flex flex-wrap gap-2 text-[10px] text-slate-700" 
+              renderTag={(skill, onRemove) => (
+                <span className="bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-tighter">
+                  {skill}
+                  {editable && onRemove && (
+                    <button onClick={onRemove} className="text-slate-400 hover:text-red-500 transition-colors">×</button>
+                  )}
+                </span>
+              )}
+            />
           </section>
           <section>
-            <h2 className="text-sm font-black uppercase tracking-widest mb-3 border-b border-slate-200">Education</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-1">Education</h2>
             <div className="space-y-4">
               <EducationBlocks data={data} handlers={handlers} errors={errors} editable={editable}
                 renderItem={(edu, i, ef) => (

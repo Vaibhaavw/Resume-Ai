@@ -166,7 +166,7 @@ export function EditableBulletList({
               data-placeholder={placeholder}
               onBlur={(e) => onChange(i, e.currentTarget.textContent || "")}
               className={cn(
-                "outline-none min-w-[4rem] cursor-text rounded px-0.5 transition-all duration-100",
+                "outline-none min-w-[4rem] min-h-[1.2em] cursor-text rounded px-0.5 transition-all duration-100",
                 "before:pointer-events-none",
                 !bullet && "before:content-[attr(data-placeholder)] before:text-slate-300 before:absolute before:top-0 before:left-0",
                 errors[i]

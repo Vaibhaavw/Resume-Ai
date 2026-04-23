@@ -109,7 +109,7 @@ export function EditableField({
           handleInput();
         }}
         className={cn(
-          "outline-none cursor-text transition-all duration-150 relative",
+          "outline-none cursor-text transition-all duration-150 relative min-h-[1.2em]",
           "before:pointer-events-none",
           isEmpty && !focused && "before:content-[attr(data-placeholder)] before:text-slate-300 before:absolute before:top-0 before:left-0",
           focused
