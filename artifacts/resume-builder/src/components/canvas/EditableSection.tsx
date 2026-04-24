@@ -77,15 +77,13 @@ export function EditableSectionItem({
   editable = true,
   className,
 }: EditableSectionItemProps) {
-  const [hovered, setHovered] = useState(false);
+
 
   if (!editable) return <div className={className}>{children}</div>;
 
   return (
     <div
       className={cn("relative group/item", className)}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       {/* Remove button */}
       {onRemove && (
@@ -94,7 +92,8 @@ export function EditableSectionItem({
           onClick={onRemove}
           className={cn(
             "absolute -right-7 top-0 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 hover:text-red-700 transition-all duration-150 shadow-sm",
-            hovered ? "opacity-100 scale-100" : "opacity-0 scale-75 pointer-events-none"
+            "opacity-0 scale-75 group-hover/item:opacity-100 group-hover/item:scale-100 pointer-events-none group-hover/item:pointer-events-auto",
+            "before:absolute before:content-[''] before:-left-8 before:top-0 before:bottom-0 before:w-8 before:bg-transparent"
           )}
           title="Remove"
         >
@@ -133,7 +132,7 @@ export function EditableBulletList({
   placeholder = "Describe an achievement or responsibility…",
   errors = {},
 }: EditableBulletListProps) {
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
 
   if (!editable) {
     return (
@@ -151,8 +150,6 @@ export function EditableBulletList({
         <div
           key={i}
           className="relative group/bullet flex items-start gap-1"
-          onMouseEnter={() => setHoveredIdx(i)}
-          onMouseLeave={() => setHoveredIdx(null)}
         >
           {/* Bullet marker */}
           <span className={cn("select-none mt-0.5 shrink-0", itemClassName?.includes("list-disc") ? "text-current" : "")}>•</span>
@@ -190,7 +187,7 @@ export function EditableBulletList({
               onClick={() => onRemove(i)}
               className={cn(
                 "ml-1 h-4 w-4 shrink-0 rounded-full flex items-center justify-center text-red-400 hover:text-red-600 transition-all duration-100 mt-0.5",
-                hoveredIdx === i ? "opacity-100" : "opacity-0 pointer-events-none"
+                "opacity-0 group-hover/bullet:opacity-100 pointer-events-none group-hover/bullet:pointer-events-auto"
               )}
             >
               <Trash2 className="h-2.5 w-2.5" />

@@ -80,6 +80,25 @@ export default function ResumeEditor() {
     addCertification, removeCertification, updateCertification,
   } = useResumeStore();
 
+  const [contentHeight, setContentHeight] = useState(0);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // Use scrollHeight to get the full content height including overflow
+        setContentHeight(canvasRef.current?.scrollHeight || entry.contentRect.height);
+      }
+    });
+    observer.observe(canvasRef.current);
+    // Initial measure
+    setContentHeight(canvasRef.current.scrollHeight);
+    return () => observer.disconnect();
+  }, [data, templateId]);
+
+  const pageHeight = 1123; // A4 height in pixels at 96 DPI
+  const numPages = Math.max(1, Math.ceil(contentHeight / pageHeight));
+
   // Parse IDs from URL
   const urlResumeId = params?.id && params.id !== "new" ? parseInt(params.id) : null;
   const searchParams = new URLSearchParams(window.location.search);
@@ -350,29 +369,63 @@ export default function ResumeEditor() {
 
         {/* ── WYSIWYG Canvas Area ───────────────────────────────────────── */}
         <div
-          className="flex-1 overflow-y-auto bg-[#E8EAED] flex flex-col items-center py-8 px-4 print:bg-white print:p-0 print:block"
+          className="flex-1 overflow-y-auto bg-[#E8EAED] flex flex-col items-center py-12 px-4 print:bg-white print:p-0 print:block relative scroll-smooth"
           style={{
             backgroundImage: "radial-gradient(circle, #d0d3d8 1px, transparent 1px)",
             backgroundSize: "20px 20px",
           }}
         >
-          {/* A4 paper */}
+          {/* Page Indicators (Fixed on the left) */}
+          <div className="absolute left-4 top-12 flex flex-col gap-[1083px] no-print pointer-events-none">
+            {Array.from({ length: numPages }).map((_, i) => (
+              <div key={i} className="bg-slate-800/80 text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg backdrop-blur-sm z-50">
+                PAGE {i + 1}
+              </div>
+            ))}
+          </div>
+
+          {/* A4 paper stack simulation */}
           <div
             ref={canvasRef}
             className={cn(
-              "w-full bg-white shadow-2xl print:shadow-none print:m-0 print:w-full",
-              "transition-all duration-200 relative"
+              "w-full bg-white shadow-2xl print:shadow-none print:m-0 print:w-full transition-all duration-300 relative",
+              "before:absolute before:inset-0 before:pointer-events-none before:no-print before:z-20"
             )}
             style={{
-              maxWidth: "794px",           // A4 at 96dpi
-              minHeight: "1123px",          // A4 height
-              boxShadow: "0 4px 40px rgba(0,0,0,0.18), 0 1px 6px rgba(0,0,0,0.10)",
+              maxWidth: "794px",
+              minHeight: `${numPages * pageHeight}px`,
+              // This gradient creates visual "gaps" between pages in the editor
+              backgroundImage: numPages > 1 ? `repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent ${pageHeight - 1}px,
+                #E8EAED ${pageHeight - 1}px,
+                #E8EAED ${pageHeight + 10}px,
+                transparent ${pageHeight + 10}px
+              )` : 'none',
+              backgroundSize: `100% ${pageHeight + 11}px`,
             }}
           >
+            {/* Page Break Lines (Overlays) */}
+            <div className="absolute inset-0 pointer-events-none no-print z-20">
+              {Array.from({ length: numPages - 1 }).map((_, i) => (
+                <div 
+                  key={i} 
+                  className="absolute left-0 right-0 border-t-2 border-dashed border-slate-300 flex items-center justify-center"
+                  style={{ top: `${(i + 1) * pageHeight}px` }}
+                >
+                  <span className="bg-[#E8EAED] text-slate-400 text-[10px] font-bold px-3 py-1 rounded-full -mt-3.5 border border-slate-200">
+                    PAGE BREAK
+                  </span>
+                </div>
+              ))}
+            </div>
+
             {/* Edit mode banner */}
-            <div className="no-print absolute -top-7 left-0 right-0 flex justify-center pointer-events-none">
-              <span className="text-[10px] font-semibold text-slate-400 bg-white/80 rounded px-2 py-0.5 border border-slate-200">
-                Click any field to edit · Hover sections to add/remove · Select text for formatting
+            <div className="no-print absolute -top-8 left-0 right-0 flex justify-center pointer-events-none z-30">
+              <span className="text-[10px] font-semibold text-slate-500 bg-white/90 backdrop-blur-sm rounded-full px-4 py-1.5 border border-slate-200 shadow-sm flex items-center gap-2">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                Live Editing Mode · {numPages} Page{numPages > 1 ? 's' : ''}
               </span>
             </div>
 

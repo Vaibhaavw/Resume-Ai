@@ -220,6 +220,17 @@
   }
 }
 
+@layer utilities {
+  .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .page-break-after {
+    break-after: page;
+    page-break-after: always;
+  }
+}
+
 .print-only { display: none; }
 
 @layer utilities {

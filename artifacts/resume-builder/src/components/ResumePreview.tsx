@@ -279,7 +279,7 @@ function CertBlocks({
 export function ModernTechLead({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-900 min-h-[1056px] p-12 print:p-0 font-sans leading-snug">
+    <div className="bg-white text-slate-900 min-h-0 p-12 print:p-0 font-sans leading-snug">
       <header className="mb-8 border-b-2 border-slate-900 pb-6">
         <h1 className="text-4xl font-extrabold tracking-tight uppercase mb-4">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
@@ -321,7 +321,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
             <div className="space-y-6">
               <ProjectBlocks data={data} handlers={handlers} errors={errors} editable={editable}
                 renderItem={(proj, i, ef, bulletsEl) => (
-                  <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all">
+                  <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all break-inside-avoid">
                     <div className="flex justify-between items-center mb-2 font-bold text-[13px]">
                       <EditableField value={proj.title} onChange={(v) => ef("title", v)} editable={editable} placeholder="Project Name" className="text-slate-900" />
                       {(proj.link || editable) && (
@@ -341,7 +341,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
           <div className="space-y-8">
             <ExperienceBlocks data={data} handlers={handlers} errors={errors} editable={editable}
               renderItem={(exp, i, ef, df, bulletsEl) => (
-                <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all">
+                <div className="hover:bg-slate-50/50 p-2 rounded-lg transition-all break-inside-avoid">
                   <div className="flex justify-between items-baseline mb-2">
                     <h3 className="font-bold text-[14px] text-slate-900">
                       <EditableField value={exp.title} onChange={(v) => ef("title", v)} editable={editable} error={errors?.[`experience.${i}.title`]} placeholder="Job Title" />
@@ -387,7 +387,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
             <h2 className="text-sm font-black uppercase tracking-widest mb-4 border-b-2 border-slate-900/10 pb-2 text-slate-800">Education</h2>
             <EducationBlocks data={data} handlers={handlers} errors={errors} editable={editable}
               renderItem={(edu, i, ef) => (
-                <div className="mb-4">
+                <div className="mb-4 break-inside-avoid">
                   <div className="font-bold text-[12px] text-slate-900"><EditableField value={edu.institution} onChange={(v) => ef("institution", v)} editable={editable} error={errors?.[`education.${i}.institution`]} placeholder="University Name" /></div>
                   <div className="text-[11px] text-slate-500 font-medium mb-1">
                     <EditableField value={edu.degree} onChange={(v) => ef("degree", v)} editable={editable} placeholder="Degree" /> in <EditableField value={edu.field} onChange={(v) => ef("field", v)} editable={editable} placeholder="Field of Study" />
@@ -409,7 +409,7 @@ export function ModernTechLead({ data, palette, editable, handlers, errors, sugg
 export function ExecutiveClassic({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-900 min-h-[1056px] p-16 print:p-0 font-serif leading-relaxed">
+    <div className="bg-white text-slate-900 min-h-0 p-16 print:p-0 font-serif leading-relaxed">
       <header className="text-center mb-10">
         <h1 className="text-3xl font-bold border-b-2 border-slate-800 pb-2 mb-3 tracking-tighter uppercase">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
@@ -512,7 +512,7 @@ export function ExecutiveClassic({ data, palette, editable, handlers, errors, su
 export function AcademicGraduate({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-900 min-h-[1056px] p-12 print:p-0 font-sans leading-tight">
+    <div className="bg-white text-slate-900 min-h-0 p-12 print:p-0 font-sans leading-tight">
       <header className="mb-10 text-center border-b-4 border-slate-900 pb-8">
         <h1 className="text-5xl font-black mb-4 uppercase tracking-[0.1em]">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
@@ -603,7 +603,7 @@ export function AcademicGraduate({ data, palette, editable, handlers, errors, su
 export function ProfessionalHybrid({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-900 min-h-[1056px] p-16 print:p-0 font-sans leading-relaxed">
+    <div className="bg-white text-slate-900 min-h-0 p-16 print:p-0 font-sans leading-relaxed">
       <header className="mb-10 flex justify-between items-start border-b pb-8">
         <div className="max-w-[60%]">
           <h1 className="text-4xl font-extrabold text-slate-800 tracking-tighter leading-none mb-4 uppercase">
@@ -703,7 +703,7 @@ export function ProfessionalHybrid({ data, palette, editable, handlers, errors, 
 export function MedicalHealthcare({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-800 min-h-[1056px] p-12 print:p-0 font-sans leading-normal">
+    <div className="bg-white text-slate-800 min-h-0 p-12 print:p-0 font-sans leading-normal">
       <header className="mb-8 border-l-8 border-emerald-600 pl-6">
         <h1 className="text-4xl font-black uppercase tracking-tight">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
@@ -787,7 +787,7 @@ export function MedicalHealthcare({ data, palette, editable, handlers, errors, s
 export function FinanceAnalyst({ data, palette, editable, handlers, errors, suggestions }: TemplateProps) {
   const pi = data.personalInfo;
   return (
-    <div className="bg-white text-slate-900 min-h-[1056px] p-16 print:p-0 font-serif leading-tight">
+    <div className="bg-white text-slate-900 min-h-0 p-16 print:p-0 font-serif leading-tight">
       <header className="border-y-2 border-slate-900 py-6 mb-10 flex justify-between items-center px-4">
         <h1 className="text-4xl font-extrabold uppercase tracking-tighter">
           <PIField pi={pi} field="firstName" handlers={handlers} errors={errors} editable={editable} placeholder="First Name" className="mr-2" />
