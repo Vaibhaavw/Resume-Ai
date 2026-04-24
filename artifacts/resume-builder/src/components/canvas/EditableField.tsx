@@ -111,7 +111,7 @@ export function EditableField({
         className={cn(
           "outline-none cursor-text transition-all duration-150 relative min-h-[1.5em] w-full",
           "before:pointer-events-none block rounded-sm px-1",
-          isEmpty && !focused && "before:content-[attr(data-placeholder)] before:text-slate-400 before:absolute before:top-0 before:left-1 before:italic bg-slate-50/30 border border-dashed border-slate-200",
+          isEmpty && !focused && "before:content-[attr(data-placeholder)] before:text-slate-400 before:relative before:italic bg-slate-50/30 border border-dashed border-slate-200",
           focused
             ? "ring-2 ring-blue-500 ring-offset-2 bg-white shadow-md z-10 border-transparent"
             : hasError

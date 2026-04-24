@@ -168,7 +168,7 @@ export function EditableBulletList({
               className={cn(
                 "outline-none min-w-[4rem] min-h-[1.5em] cursor-text rounded px-1 transition-all duration-100 block w-full",
                 "before:pointer-events-none relative",
-                !bullet && "before:content-[attr(data-placeholder)] before:text-slate-400 before:absolute before:top-0 before:left-1 before:italic bg-slate-50/30 border border-dashed border-slate-200",
+                !bullet && "before:content-[attr(data-placeholder)] before:text-slate-400 before:relative before:italic bg-slate-50/30 border border-dashed border-slate-200",
                 errors[i]
                   ? "ring-2 ring-red-400 bg-red-50/20 border-red-200"
                   : "hover:bg-slate-50 hover:border-slate-300 focus:ring-2 focus:ring-blue-500 focus:bg-white focus:shadow-md",
