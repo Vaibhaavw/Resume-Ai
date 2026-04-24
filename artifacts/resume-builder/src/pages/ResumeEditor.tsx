@@ -167,7 +167,7 @@ export default function ResumeEditor() {
   const handleFloatingEnhance = (selectedText: string) => {
     if (!selectedText || enhancing) return;
     setEnhancing(true);
-    enhanceMutation.mutate({ data: { field: "bullets", content: selectedText, sector } } as any, {
+    enhanceMutation.mutate({ id: resumeId || 0, data: { field: "bullets", content: selectedText, sector } } as any, {
       onSuccess: (d: any) => {
         if (d?.enhanced) {
           document.execCommand("insertText", false, d.enhanced);
@@ -184,7 +184,7 @@ export default function ResumeEditor() {
       toast({ title: "Write a summary first" });
       return;
     }
-    enhanceMutation.mutate({ data: { field: "summary", content: data.personalInfo.summary, sector } } as any, {
+    enhanceMutation.mutate({ id: resumeId || 0, data: { field: "summary", content: data.personalInfo.summary, sector } } as any, {
       onSuccess: (d: any) => {
         if (d?.enhanced) updatePersonalInfo("summary", d.enhanced);
         toast({ title: "Summary enhanced" });
