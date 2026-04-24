@@ -218,6 +218,13 @@
     margin: 0 !important;
     padding: 0 !important;
   }
+
+  /* Force containers to expand for printing all pages */
+  html, body, #root, [class*="h-screen"], main, [class*="overflow-y-auto"] {
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
 }
 
 @layer utilities {

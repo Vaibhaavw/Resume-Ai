@@ -388,7 +388,7 @@ export default function ResumeEditor() {
           <div
             ref={canvasRef}
             className={cn(
-              "w-full bg-white shadow-2xl print:shadow-none print:m-0 print:w-full transition-all duration-300 relative",
+              "w-full bg-white shadow-2xl print:shadow-none print:m-0 print:w-full print:bg-transparent transition-all duration-300 relative",
               "before:absolute before:inset-0 before:pointer-events-none before:no-print before:z-20"
             )}
             style={{
@@ -428,6 +428,7 @@ export default function ResumeEditor() {
                 Live Editing Mode · {numPages} Page{numPages > 1 ? 's' : ''}
               </span>
             </div>
+
 
             <ResumePreview
               data={previewData}
